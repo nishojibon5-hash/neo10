@@ -1,6 +1,7 @@
 import { MessageCircle, Share2, MoreHorizontal } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ReactionButton } from "./Reactions";
+import AdInline from "./AdInline";
 import { Link } from "react-router-dom";
 
 export interface Post {
@@ -14,6 +15,7 @@ export interface Post {
   likes: number;
   comments: number;
   shares: number;
+  monetized?: boolean;
 }
 
 export default function PostCard({ post }: { post: Post }) {
@@ -45,6 +47,7 @@ export default function PostCard({ post }: { post: Post }) {
       {post.video && (
         <video src={post.video} controls className="max-h-[520px] w-full" />
       )}
+      {post.monetized ? <AdInline /> : null}
       <div className="px-3 py-2 text-xs text-muted-foreground flex items-center gap-4">
         <span>{post.likes} reactions</span>
         <span>{post.comments} comments</span>

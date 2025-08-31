@@ -56,6 +56,7 @@ export default function Index() {
             likes: Number(p.likes || 0),
             comments: Number(p.comments || 0),
             shares: 0,
+            monetized: Boolean(p.monetized),
           }));
           if (mapped.length) setFeed(mapped);
         }
