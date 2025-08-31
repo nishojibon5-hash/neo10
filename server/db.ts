@@ -15,6 +15,7 @@ export async function initDb() {
     create table if not exists users (
       id uuid primary key default uuid_generate_v4(),
       name text not null,
+      username text unique,
       email text unique,
       phone text unique,
       password_hash text not null,
@@ -23,6 +24,8 @@ export async function initDb() {
       bio text,
       created_at timestamptz not null default now()
     );
+
+    alter table users add column if not exists username text unique;
 
     create table if not exists posts (
       id uuid primary key default uuid_generate_v4(),
