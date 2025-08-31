@@ -4,7 +4,7 @@ import cors from "cors";
 import { handleDemo } from "./routes/demo";
 import { initDb } from "./db";
 import { register, login, me } from "./routes/auth";
-import { getFeed, createPost } from "./routes/posts";
+import { getFeed, createPost, reactPost, unreactPost } from "./routes/posts";
 import dotenv from "dotenv";
 
 dotenv.config();
