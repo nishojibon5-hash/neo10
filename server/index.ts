@@ -6,6 +6,8 @@ import { initDb } from "./db";
 import { register, login, me } from "./routes/auth";
 import { getFeed, createPost, reactPost, unreactPost } from "./routes/posts";
 import { getUser, getUserPosts, updateMe, follow, accept } from "./routes/users";
+import { uploadBase64, getAsset } from "./routes/assets";
+import { listStories, createStory } from "./routes/stories";
 import dotenv from "dotenv";
 
 dotenv.config();
