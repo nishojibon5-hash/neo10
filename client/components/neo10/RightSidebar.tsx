@@ -3,6 +3,7 @@ import { MessageSquare, Settings, ShieldCheck, HelpCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const shortcuts = [
+  { to: "/ads/create", label: "Create Ads", icon: MessageSquare },
   { to: "/messages", label: "Messenger", icon: MessageSquare },
   { to: "/settings", label: "Settings", icon: Settings },
   { to: "/privacy", label: "Privacy", icon: ShieldCheck },
