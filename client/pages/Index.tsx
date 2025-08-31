@@ -8,7 +8,7 @@ const defaultFeed: Post[] = [
   {
     id: "1",
     author: { name: "Ayesha Khan", avatar: "https://i.pravatar.cc/100?img=15" },
-    content: "আজকে ঢাকার আকাশটা দারুণ সুন্দর! ☁️",
+    content: "আজকে ঢাকার আকাশটা দারুণ সুন্দ��! ☁️",
     image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1400&auto=format&fit=crop",
     createdAt: "1h",
     likes: 120,
@@ -37,6 +37,32 @@ const defaultFeed: Post[] = [
 ];
 
 export default function Index() {
+  const [feed, setFeed] = useState<Post[]>(defaultFeed);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/feed");
+        if (res.ok) {
+          const data = await res.json();
+          const mapped: Post[] = (data.posts || []).map((p: any) => ({
+            id: p.id,
+            author: { name: p.user_name, avatar: p.user_avatar || "https://i.pravatar.cc/100?img=12" },
+            content: p.content || "",
+            image: p.image_url || undefined,
+            createdAt: new Date(p.created_at).toLocaleString(),
+            likes: Number(p.likes || 0),
+            comments: Number(p.comments || 0),
+            shares: 0,
+          }));
+          if (mapped.length) setFeed(mapped);
+        }
+      } catch {
+        // ignore: backend not configured yet
+      }
+    })();
+  }, []);
+
   return (
     <Layout>
       <div className="space-y-4">
