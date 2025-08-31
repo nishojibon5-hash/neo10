@@ -9,6 +9,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
+import ProfileEdit from "./pages/ProfileEdit";
+import UserProfile from "./pages/UserProfile";
 import Placeholder from "./pages/Placeholder";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
