@@ -76,6 +76,30 @@ export async function initDb() {
       video_url text,
       created_at timestamptz not null default now()
     )`,
+    `create table if not exists ads (
+      id uuid primary key,
+      user_id uuid not null references users(id) on delete cascade,
+      title text not null,
+      media_url text,
+      media_type text check (media_type in ('image','video')),
+      destination_url text,
+      locations text,
+      audience text,
+      budget numeric,
+      start_at timestamptz,
+      end_at timestamptz,
+      status text not null default 'pending',
+      trial_until timestamptz,
+      payment_method text,
+      transaction_id text,
+      created_at timestamptz not null default now()
+    )`,
+    `create table if not exists ad_impressions (
+      id uuid primary key,
+      ad_id uuid not null references ads(id) on delete cascade,
+      placement text,
+      created_at timestamptz not null default now()
+    )`,
   ];
   for (const sql of statements) {
     try { await pool.query(sql); } catch (e) { console.error("DB init step failed", e); }
