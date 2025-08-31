@@ -45,11 +45,12 @@ export const createPost: RequestHandler = async (req, res) => {
     const payload = jwt.verify(token, JWT_SECRET) as { sub: string };
 
     const body = createSchema.parse(req.body);
+    const id = randomUUID();
     const { rows } = await query(
-      `insert into posts (user_id, content, content_mode, image_url, video_url, type, monetized)
-       values ($1,$2,$3,$4,$5,$6,$7)
+      `insert into posts (id, user_id, content, content_mode, image_url, video_url, type, monetized)
+       values ($1,$2,$3,$4,$5,$6,$7,$8)
        returning id, created_at`,
-      [payload.sub, body.content ?? null, body.content_mode, body.image_url ?? null, body.video_url ?? null, body.type, body.monetized],
+      [id, payload.sub, body.content ?? null, body.content_mode, body.image_url ?? null, body.video_url ?? null, body.type, body.monetized],
     );
     res.json({ id: rows[0].id });
   } catch (e) {
