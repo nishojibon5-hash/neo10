@@ -1,0 +1,60 @@
+import Layout from "@/components/neo10/Layout";
+import PostCard, { type Post } from "@/components/neo10/PostCard";
+import { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+
+export default function UserProfile() {
+  const { id } = useParams<{ id: string }>();
+  const [user, setUser] = useState<any>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const u = await fetch(`/api/users/${id}`).then((r) => r.json()).catch(() => null);
+      if (u?.user) setUser(u.user);
+      const p = await fetch(`/api/users/${id}/posts`).then((r) => r.json()).catch(() => null);
+      if (p?.posts) {
+        const mapped: Post[] = p.posts.map((x: any) => ({
+          id: x.id,
+          author: { id: x.user_id, name: x.user_name, avatar: x.user_avatar },
+          content: x.content || "",
+          mode: x.content_mode === 'html' ? 'html' : 'text',
+          image: x.image_url || undefined,
+          video: x.video_url || undefined,
+          createdAt: new Date(x.created_at).toLocaleString(),
+          likes: 0, comments: 0, shares: 0,
+        }));
+        setPosts(mapped);
+      }
+    })();
+  }, [id]);
+
+  return (
+    <Layout>
+      {!user ? (
+        <div className="rounded-xl border bg-card p-8">Loading...</div>
+      ) : (
+        <div className="space-y-4">
+          <div className="rounded-xl border overflow-hidden">
+            <div className="h-48 w-full bg-cover bg-center" style={{ backgroundImage: `url(${user.cover_url || ''})` }} />
+            <div className="p-4 flex items-center gap-4">
+              <img src={user.avatar_url || 'https://i.pravatar.cc/100'} className="h-20 w-20 rounded-full border-4 border-card -mt-12 bg-muted object-cover" />
+              <div className="flex-1">
+                <h1 className="text-xl font-bold">{user.name} {user.username && <span className="text-muted-foreground text-sm">@{user.username}</span>}</h1>
+                <p className="text-sm text-muted-foreground">{user.bio || '—'}</p>
+              </div>
+              <div className="flex gap-2">
+                <Button asChild variant="secondary"><Link to="/messages">Message</Link></Button>
+                <Button asChild><Link to={`/u/${id}?action=follow`}>Follow</Link></Button>
+              </div>
+            </div>
+          </div>
+          <section className="space-y-4">
+            {posts.map((p) => <PostCard key={p.id} post={p} />)}
+          </section>
+        </div>
+      )}
+    </Layout>
+  );
+}
