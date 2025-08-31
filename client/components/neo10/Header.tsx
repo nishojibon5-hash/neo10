@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { getToken, clearToken } from "@/lib/auth";
 import { useEffect, useState } from "react";
+import MobileNav from "./MobileNav";
 
 const nav = [
   { to: "/", label: "Home", icon: Home },
@@ -25,7 +26,8 @@ export default function Header() {
     <header className="fixed inset-x-0 top-0 z-50 border-b bg-card/80 backdrop-blur supports-[backdrop-filter]:bg-card/60">
       <div className="mx-auto max-w-6xl flex items-center gap-3 px-2 sm:px-4 h-14">
         <Link to="/" className="flex items-center gap-2 shrink-0">
-          <div className="size-9 rounded-full bg-primary text-primary-foreground grid place-items-center font-extrabold">N</div>
+          <span className="text-2xl font-black md:hidden">NEO10</span>
+          <div className="hidden md:grid place-items-center size-9 rounded-full bg-primary text-primary-foreground font-extrabold">N</div>
           <span className="font-extrabold tracking-tight text-lg hidden sm:block">NEO10</span>
         </Link>
         <div className="flex-1" />
@@ -116,6 +118,10 @@ export default function Header() {
             </NavLink>
           )}
         </nav>
+      </div>
+      {/* Mobile nav tabs */}
+      <div className="mx-auto max-w-6xl px-2 md:hidden border-t">
+        <MobileNav />
       </div>
     </header>
   );
