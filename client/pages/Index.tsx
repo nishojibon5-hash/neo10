@@ -47,7 +47,7 @@ export default function Index() {
           const data = await res.json();
           const mapped: Post[] = (data.posts || []).map((p: any) => ({
             id: p.id,
-            author: { name: p.user_name, avatar: p.user_avatar || "https://i.pravatar.cc/100?img=12" },
+            author: { id: p.user_id, name: p.user_name, avatar: p.user_avatar || "https://i.pravatar.cc/100?img=12" },
             content: p.content || "",
             mode: p.content_mode === 'html' ? 'html' : 'text',
             image: p.image_url || undefined,
