@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import { z } from "zod";
 import { query } from "../db";
 
-const JWT_SECRET = process.env.JWT_SECRET || "";
 
 export const getFeed: RequestHandler = async (_req, res) => {
   try {
@@ -38,6 +37,7 @@ const createSchema = z.object({
 
 export const createPost: RequestHandler = async (req, res) => {
   try {
+    const JWT_SECRET = process.env.JWT_SECRET;
     const auth = req.headers.authorization || "";
     const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
     if (!token || !JWT_SECRET) return res.status(401).json({ error: "Unauthorized" });
@@ -61,6 +61,7 @@ const reactSchema = z.object({ type: z.enum(["😆","🥲","🫦","🥴","😡",
 
 export const reactPost: RequestHandler = async (req, res) => {
   try {
+    const JWT_SECRET = process.env.JWT_SECRET;
     const auth = req.headers.authorization || "";
     const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
     if (!token || !JWT_SECRET) return res.status(401).json({ error: "Unauthorized" });
@@ -83,6 +84,7 @@ export const reactPost: RequestHandler = async (req, res) => {
 
 export const unreactPost: RequestHandler = async (req, res) => {
   try {
+    const JWT_SECRET = process.env.JWT_SECRET;
     const auth = req.headers.authorization || "";
     const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
     if (!token || !JWT_SECRET) return res.status(401).json({ error: "Unauthorized" });
