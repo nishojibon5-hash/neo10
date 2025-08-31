@@ -28,17 +28,21 @@ export function ReactionButton({ postId, initialCount = 0 }: { postId: string; i
         headers: { "Content-Type": "application/json", Authorization: token ? `Bearer ${token}` : "" },
         body: JSON.stringify({ type: emoji }),
       });
+      if (res.status === 401) {
+        window.location.href = "/login";
+        return;
+      }
       if (res.ok) setCount((c) => (c || 0) + 1);
     } catch {}
   };
 
   return (
     <div className="relative" onMouseLeave={() => setOpen(false)}>
-      <button className="flex items-center justify-center gap-2 py-2.5 hover:bg-muted/60 w-full" onMouseEnter={() => setOpen(true)} onClick={() => setOpen((p) => !p)}>
+      <button className="flex items-center justify-center gap-2 py-2.5 hover:bg-muted/60 w-full" onClick={() => setOpen((p) => !p)}>
         Like
       </button>
       {open && (
-        <div className="absolute -top-10 left-1/2 -translate-x-1/2">
+        <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 z-20">
           <ReactionPicker onPick={send} />
         </div>
       )}
