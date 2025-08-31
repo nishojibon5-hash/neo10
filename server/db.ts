@@ -1,6 +1,7 @@
 import { Pool } from "pg";
 
-const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL || "";
+const raw = process.env.POSTGRES_URL || process.env.DATABASE_URL || "";
+const connectionString = raw ? raw.replace(/([?&])channel_binding=[^&]+&?/i, "$1").replace(/[?&]$/, "") : "";
 
 export const pool = connectionString
   ? new Pool({ connectionString, ssl: { rejectUnauthorized: false } })
