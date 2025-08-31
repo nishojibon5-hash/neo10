@@ -9,6 +9,9 @@ export const pool = connectionString
 export async function initDb() {
   if (!pool) return;
   await pool.query(`
+    create extension if not exists pgcrypto;
+    create extension if not exists "uuid-ossp";
+
     create table if not exists users (
       id uuid primary key default gen_random_uuid(),
       name text not null,
