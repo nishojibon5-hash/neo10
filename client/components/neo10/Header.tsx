@@ -1,7 +1,9 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Home, Users, Video, Store, Bell, MessageSquare, Search, User, PlusCircle } from "lucide-react";
+import { Home, Users, Video, Store, Bell, MessageSquare, Search, User, PlusCircle, LogOut, LogIn } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { getToken, clearToken } from "@/lib/auth";
+import { useEffect, useState } from "react";
 
 const nav = [
   { to: "/", label: "Home", icon: Home },
@@ -13,6 +15,12 @@ const nav = [
 
 export default function Header() {
   const navigate = useNavigate();
+  const [logged, setLogged] = useState<boolean>(Boolean(getToken()));
+  useEffect(() => {
+    const onChange = () => setLogged(Boolean(getToken()));
+    window.addEventListener("auth:change", onChange);
+    return () => window.removeEventListener("auth:change", onChange);
+  }, []);
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b bg-card/80 backdrop-blur supports-[backdrop-filter]:bg-card/60">
       <div className="mx-auto max-w-6xl flex items-center gap-3 px-2 sm:px-4 h-14">
