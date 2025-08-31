@@ -13,38 +13,116 @@ function StepHeader({ title, onClose }: { title: string; onClose: () => void }) 
   );
 }
 
+function buildYouTubeEmbed(urlOrId: string) {
+  const idMatch = urlOrId.match(/(?:youtu\.be\/|v=|embed\/)([A-Za-z0-9_-]{6,})/);
+  const id = idMatch ? idMatch[1] : urlOrId;
+  const src = `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1`;
+  return `<div class="rounded-lg overflow-hidden bg-black">
+    <iframe src="${src}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen class="w-full aspect-video border-0"></iframe>
+  </div>`;
+}
+
+function buildFacebookEmbed(url: string) {
+  const enc = encodeURIComponent(url);
+  const src = `https://www.facebook.com/plugins/video.php?href=${enc}&show_text=false&autoplay=true&mute=true`;
+  return `<div class="rounded-lg overflow-hidden bg-black">
+    <iframe src="${src}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen class="w-full aspect-video border-0"></iframe>
+  </div>`;
+}
+
+function isImageUrl(s: string) {
+  return /\.(png|jpe?g|gif|webp|avif)(\?.*)?$/i.test(s.trim());
+}
+
+function extractIframeSrc(html: string) {
+  const m = html.match(/<iframe[^>]+src=["']([^"']+)["']/i);
+  return m ? m[1] : null;
+}
+
+function parseMediaInput(input: string): { imageUrl?: string; html?: string } {
+  const raw = input.trim();
+  if (!raw) return {};
+
+  // If full iframe embed provided
+  const iframeSrc = raw.startsWith("<iframe") ? extractIframeSrc(raw) : null;
+  const candidate = iframeSrc || raw;
+
+  if (/youtube\.com|youtu\.be/i.test(candidate)) {
+    return { html: buildYouTubeEmbed(candidate) };
+  }
+  if (/facebook\.com|fb\.watch/i.test(candidate)) {
+    // For FB, require full video URL (or extracted src)
+    return { html: buildFacebookEmbed(candidate) };
+  }
+  if (isImageUrl(candidate)) {
+    return { imageUrl: candidate };
+  }
+  // Unknown: if it's http(s) and ends with common video extensions, fallback to <video>
+  if (/^https?:\/\//i.test(candidate) && /\.(mp4|webm|ogg)(\?.*)?$/i.test(candidate)) {
+    const html = `<video src="${candidate}" class="w-full rounded-lg" playsinline muted autoplay loop controlslist="nodownload noplaybackrate" />`;
+    return { html };
+  }
+  return {};
+}
+
 export default function Composer() {
   const [expanded, setExpanded] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
   const [mode, setMode] = useState<"text" | "html">("text");
   const [content, setContent] = useState("");
+  const [mediaInput, setMediaInput] = useState("");
   const [image, setImage] = useState("");
-  const [video, setVideo] = useState("");
+  const [embedHtml, setEmbedHtml] = useState("");
   const [type, setType] = useState<"post" | "video" | "reel">("post");
   const [monetized, setMonetized] = useState(false);
 
   const canProceed = useMemo(() => {
-    return (content && content.trim().length > 0) || !!image || !!video;
-  }, [content, image, video]);
+    return (content && content.trim().length > 0) || !!mediaInput.trim();
+  }, [content, mediaInput]);
 
   const reset = () => {
     setExpanded(false);
     setStep(1);
     setMode("text");
     setContent("");
+    setMediaInput("");
     setImage("");
-    setVideo("");
+    setEmbedHtml("");
     setType("post");
     setMonetized(false);
+  };
+
+  const handleNext = () => {
+    const parsed = parseMediaInput(mediaInput);
+    setImage(parsed.imageUrl || "");
+    setEmbedHtml(parsed.html || "");
+    // If we detected HTML embed, force HTML mode for submission composition
+    if (parsed.html && mode !== "html") setMode("html");
+    setStep(2);
   };
 
   const submit = async () => {
     try {
       const token = localStorage.getItem("token") || "";
+
+      let finalContent = content;
+      let finalMode: "text" | "html" = mode;
+      let imageUrl: string | undefined = image || undefined;
+      let videoUrl: string | undefined = undefined;
+
+      if (embedHtml) {
+        finalMode = "html";
+        const textPart = content.trim() ? `<div class=\"whitespace-pre-wrap\">${content.replace(/</g, "&lt;")}</div>` : "";
+        finalContent = `${textPart}${embedHtml}`;
+        // When embedding via HTML, store media in content only
+        imageUrl = undefined;
+        videoUrl = undefined;
+      }
+
       const res = await fetch("/api/posts", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: token ? `Bearer ${token}` : "" },
-        body: JSON.stringify({ content, content_mode: mode, image_url: image || undefined, video_url: video || undefined, type, monetized }),
+        body: JSON.stringify({ content: finalContent, content_mode: finalMode, image_url: imageUrl, video_url: videoUrl, type, monetized }),
       });
       if (res.status === 401) {
         alert("Please login to post.");
@@ -136,21 +214,16 @@ export default function Composer() {
               />
             )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <input value={image} onChange={(e) => setImage(e.target.value)} placeholder="Image URL (optional)" className="h-9 w-full rounded-md bg-muted/60 px-3" />
-              <input value={video} onChange={(e) => setVideo(e.target.value)} placeholder="Video/Reel URL (optional)" className="h-9 w-full rounded-md bg-muted/60 px-3" />
-            </div>
-
-            {(image || video) && (
-              <div className="space-y-2">
-                {image ? <img src={image} alt="preview" className="max-h-64 w-full rounded-md object-cover" /> : null}
-                {video ? <video src={video} controls className="max-h-64 w-full rounded-md" /> : null}
-              </div>
-            )}
+            <textarea
+              value={mediaInput}
+              onChange={(e) => setMediaInput(e.target.value)}
+              placeholder="Paste image URL or YouTube/Facebook link or iframe embed code"
+              className="min-h-20 w-full rounded-md bg-muted/60 p-2 text-sm"
+            />
 
             <div className="flex items-center justify-end gap-2 pt-1">
               <Button variant="ghost" size="sm" onClick={reset}>Cancel</Button>
-              <Button size="sm" onClick={() => setStep(2)} disabled={!canProceed}>Next</Button>
+              <Button size="sm" onClick={handleNext} disabled={!canProceed}>Next</Button>
             </div>
           </div>
         </div>
@@ -158,12 +231,11 @@ export default function Composer() {
         <div className="p-3 space-y-3">
           <div className="rounded-md border bg-background p-3 text-sm">
             {mode === 'html' ? (
-              <div className="prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: content }} />
+              <div className="prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: embedHtml ? `${content.trim() ? `<div class=\"whitespace-pre-wrap\">${content.replace(/</g, "&lt;")}</div>` : ''}${embedHtml}` : content }} />
             ) : (
               <div className="whitespace-pre-wrap">{content}</div>
             )}
             {image ? <img src={image} alt="preview" className="mt-2 max-h-64 w-full rounded-md object-cover" /> : null}
-            {video ? <video src={video} controls className="mt-2 max-h-64 w-full rounded-md" /> : null}
           </div>
 
           <div className="rounded-md border p-3">
