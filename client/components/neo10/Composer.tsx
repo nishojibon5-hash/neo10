@@ -1,8 +1,9 @@
-import { Image, Video, Smile, Type } from "lucide-react";
+import { Image, Video, Smile, Type, Upload } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useMemo, useState } from "react";
+import { uploadAsset } from "@/lib/upload";
 import { getUser } from "@/lib/auth";
 
 function StepHeader({ title, onClose }: { title: string; onClose: () => void }) {
@@ -222,9 +223,25 @@ export default function Composer() {
               className="min-h-20 w-full rounded-md bg-muted/60 p-2 text-sm"
             />
 
-            <div className="flex items-center justify-end gap-2 pt-1">
-              <Button variant="ghost" size="sm" onClick={reset}>Cancel</Button>
-              <Button size="sm" onClick={handleNext} disabled={!canProceed}>Next</Button>
+            <div className="flex items-center justify-between pt-1">
+              <div className="flex items-center gap-2 text-xs">
+                <label className="inline-flex items-center gap-1 cursor-pointer px-2 py-1 rounded bg-muted/60">
+                  <Upload className="size-3" /> Upload photo
+                  <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                    const f = e.target.files?.[0]; if (!f) return; const url = await uploadAsset(f); setImage(url); setMediaInput("");
+                  }} />
+                </label>
+                <label className="inline-flex items-center gap-1 cursor-pointer px-2 py-1 rounded bg-muted/60">
+                  <Upload className="size-3" /> Upload video
+                  <input type="file" accept="video/*" className="hidden" onChange={async (e) => {
+                    const f = e.target.files?.[0]; if (!f) return; const url = await uploadAsset(f); setEmbedHtml(""); setImage(""); setMediaInput(url); setMode('text');
+                  }} />
+                </label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="sm" onClick={reset}>Cancel</Button>
+                <Button size="sm" onClick={handleNext} disabled={!canProceed}>Next</Button>
+              </div>
             </div>
           </div>
         </div>
