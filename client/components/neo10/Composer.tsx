@@ -52,7 +52,10 @@ export default function Composer() {
           {mode === 'html' ? (
             <textarea value={content} onChange={(e)=>setContent(e.target.value)} placeholder="Write/paste HTML..." className="min-h-24 w-full rounded-md border bg-background p-2 text-sm" />
           ) : (
-            <input value={content} onChange={(e)=>setContent(e.target.value)} placeholder="What's on your mind?" className="h-10 w-full rounded-full bg-muted/60 px-4 outline-none focus:ring-2 focus:ring-primary/40" />
+            <div className="flex items-center gap-2 rounded-full bg-muted/60 px-3 h-11">
+              <input value={content} onChange={(e)=>setContent(e.target.value)} placeholder="What's on your mind?" className="flex-1 bg-transparent outline-none" />
+              <button type="button" className="text-primary text-sm font-medium" onClick={()=>setType('post')}>Photo</button>
+            </div>
           )}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <input value={image} onChange={(e)=>setImage(e.target.value)} placeholder="Image URL (optional)" className="h-9 w-full rounded-md bg-muted/60 px-3" />
