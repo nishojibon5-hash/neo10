@@ -37,7 +37,7 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/search" element={<Placeholder title="Search" />} />
-          <Route path="/ads/create" element={<Placeholder title="Create Ads" />} />
+          <Route path="/ads/create" element={<AdsCreate />} />
           <Route path="/admin" element={<Placeholder title="Admin Panel" />} />
           <Route path="/settings" element={<Placeholder title="Settings" />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
