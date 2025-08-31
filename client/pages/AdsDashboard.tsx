@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { getToken } from "@/lib/auth";
 
-interface Ad { id: string; title: string; status: string; media_url?: string; media_type?: string; impressions?: number; created_at?: string; }
+interface Ad { id: string; title: string; status: string; effective_status?: string; media_url?: string; media_type?: string; impressions?: number; created_at?: string; }
 
 export default function AdsDashboard() {
   const [ads, setAds] = useState<Ad[]>([]);
@@ -17,6 +17,13 @@ export default function AdsDashboard() {
 
   const pause = async (id: string, status: string) => {
     const res = await fetch(`/api/ads/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` }, body: JSON.stringify({ status }) });
+    if (res.ok) load();
+  };
+  const markPaid = async (id: string) => {
+    const method = prompt("Payment method (bKash/Nagad)")?.trim();
+    const tx = prompt("Transaction ID")?.trim();
+    if (!method || !tx) return;
+    const res = await fetch(`/api/ads/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` }, body: JSON.stringify({ payment_method: method, transaction_id: tx }) });
     if (res.ok) load();
   };
 
@@ -35,10 +42,11 @@ export default function AdsDashboard() {
               ) : null}
               <div className="flex-1">
                 <div className="font-semibold">{a.title}</div>
-                <div className="text-xs text-muted-foreground">Status: {a.status} • Impressions: {a.impressions ?? 0}</div>
+                <div className="text-xs text-muted-foreground">Status: {a.effective_status || a.status} • Impressions: {a.impressions ?? 0}</div>
               </div>
               <div className="flex items-center gap-2">
-                <Button size="sm" variant="outline" onClick={() => pause(a.id, a.status === 'active' ? 'paused' : 'active')}>{a.status === 'active' ? 'Pause' : 'Activate'}</Button>
+                <Button size="sm" variant="outline" onClick={() => pause(a.id, (a.effective_status || a.status) === 'active' ? 'paused' : 'active')}>{(a.effective_status || a.status) === 'active' ? 'Pause' : 'Activate'}</Button>
+                {(a.effective_status === 'invoice_due') ? <Button size="sm" onClick={() => markPaid(a.id)}>Mark as paid</Button> : null}
               </div>
             </div>
           ))}
