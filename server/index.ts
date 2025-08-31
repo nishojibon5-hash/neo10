@@ -65,5 +65,12 @@ export function createServer() {
   app.get("/api/stories", listStories);
   app.post("/api/stories", createStory);
 
+  // Ads
+  app.post("/api/ads", createAd);
+  app.get("/api/ads/mine", listMyAds);
+  app.get("/api/ads/active", getActiveAd);
+  app.post("/api/ads/:id/impression", addImpression);
+  app.patch("/api/ads/:id", patchAd);
+
   return app;
 }
