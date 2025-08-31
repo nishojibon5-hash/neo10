@@ -16,15 +16,18 @@ type Form = {
   budget?: number;
   start_at?: string;
   end_at?: string;
+  trial?: boolean;
   payment_method?: string;
   transaction_id?: string;
 };
 
 export default function AdsCreate() {
-  const { register, handleSubmit, setValue, watch } = useForm<Form>();
+  const { register, handleSubmit, setValue, watch } = useForm<Form>({ defaultValues: { trial: true } });
   const [submitting, setSubmitting] = useState(false);
   const mediaUrl = watch("media_url");
   const mediaType = watch("media_type");
+  const trial = watch("trial");
+  const endAt = watch("end_at");
 
   const pickMedia = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0]; if (!f) return;
@@ -76,12 +79,24 @@ export default function AdsCreate() {
           </div>
 
           <div className="rounded-md border p-3 space-y-2 text-sm">
-            <div className="font-medium">Payment (bKash/Nagad)</div>
-            <p className="text-muted-foreground">Pay to 01650074073 (personal). After payment, enter method and transaction ID. Your ad will go live with 2-day free trial.</p>
-            <div className="grid grid-cols-2 gap-2">
-              <Input placeholder="Method (bKash/Nagad)" {...register("payment_method")} />
-              <Input placeholder="Transaction ID" {...register("transaction_id")} />
+            <div className="flex items-center justify-between">
+              <div className="font-medium">2-day free trial</div>
+              <input type="checkbox" {...register("trial")} />
             </div>
+            <p className="text-muted-foreground">If enabled, your ad goes live instantly for 2 days. To run longer than 2 days, complete payment below.</p>
+            {!trial && (
+              <div className="space-y-2">
+                <div className="font-medium">Payment (bKash/Nagad)</div>
+                <p className="text-muted-foreground">Pay to 01650074073 (personal). After payment, enter method and transaction ID to activate.</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <Input placeholder="Method (bKash/Nagad)" {...register("payment_method")} />
+                  <Input placeholder="Transaction ID" {...register("transaction_id")} />
+                </div>
+              </div>
+            )}
+            {trial && endAt ? (
+              <p className="text-xs text-amber-600">Note: Trial serves only until 2 days from now, regardless of End at.</p>
+            ) : null}
           </div>
 
           <Button type="submit" disabled={submitting} className="w-full">{submitting ? "Submitting..." : "Submit"}</Button>
