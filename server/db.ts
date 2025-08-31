@@ -28,7 +28,11 @@ export async function initDb() {
       id uuid primary key default uuid_generate_v4(),
       user_id uuid not null references users(id) on delete cascade,
       content text,
+      content_mode text not null default 'text', -- 'text' | 'html'
       image_url text,
+      video_url text,
+      type text not null default 'post', -- 'post' | 'video' | 'reel'
+      monetized boolean not null default false,
       privacy text default 'public',
       created_at timestamptz not null default now()
     );
@@ -36,6 +40,14 @@ export async function initDb() {
     create table if not exists likes (
       user_id uuid not null references users(id) on delete cascade,
       post_id uuid not null references posts(id) on delete cascade,
+      created_at timestamptz not null default now(),
+      primary key (user_id, post_id)
+    );
+
+    create table if not exists reactions (
+      user_id uuid not null references users(id) on delete cascade,
+      post_id uuid not null references posts(id) on delete cascade,
+      type text not null check (type in ('😆','🥲','🫦','🥴','😡','♥️','🤔','😮')),
       created_at timestamptz not null default now(),
       primary key (user_id, post_id)
     );
