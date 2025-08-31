@@ -41,6 +41,8 @@ export function createServer() {
   // Posts
   app.get("/api/feed", getFeed);
   app.post("/api/posts", createPost);
+  app.post("/api/posts/:id/react", reactPost);
+  app.delete("/api/posts/:id/react", unreactPost);
 
   return app;
 }
