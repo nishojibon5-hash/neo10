@@ -16,7 +16,7 @@ export default function Stories() {
       <button className="relative flex w-28 shrink-0 flex-col overflow-hidden rounded-xl border bg-card text-left">
         <div className="h-32 w-full bg-muted/60" />
         <div className="p-2 text-sm">Create story</div>
-        <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 grid place-items-center size-8 rounded-full bg-primary text-primary-foreground border-2 border-card">
+        <div className="absolute bottom-2 left-2 grid place-items-center size-7 rounded-full bg-primary text-primary-foreground border-2 border-white shadow">
           <Plus className="size-4" />
         </div>
       </button>
