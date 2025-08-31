@@ -22,8 +22,10 @@ export function createServer() {
   initDb().catch((e) => console.error("DB init error", e));
 
   // Health
-  app.get("/api/health", (_req, res) => {
-    res.json({ ok: true, db: Boolean(process.env.POSTGRES_URL || process.env.DATABASE_URL), jwt: Boolean(process.env.JWT_SECRET) });
+  app.get("/api/health", async (_req, res) => {
+    let dbOk = false;
+    try { const { pool } = await import('./db'); dbOk = !!pool; if (pool) { await pool.query('select 1'); } } catch {}
+    res.json({ ok: true, db: dbOk, jwt: Boolean(process.env.JWT_SECRET) });
   });
 
   // Example API routes
