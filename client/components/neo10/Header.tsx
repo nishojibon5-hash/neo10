@@ -18,6 +18,7 @@ function MenuContent({ onNavigate }: { onNavigate: (to: string) => void }) {
         <button onClick={() => onNavigate('/videos')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Videos</button>
         <button onClick={() => onNavigate('/marketplace')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Marketplace</button>
         <button onClick={() => onNavigate('/ads/create')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Create Ads</button>
+        <button onClick={() => onNavigate('/ads/dashboard')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Ads Dashboard</button>
         <button onClick={() => onNavigate('/settings')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Settings</button>
       </nav>
       <div className="border-t py-2">
