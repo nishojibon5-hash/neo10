@@ -13,7 +13,7 @@ export async function initDb() {
     create extension if not exists "uuid-ossp";
 
     create table if not exists users (
-      id uuid primary key default gen_random_uuid(),
+      id uuid primary key default uuid_generate_v4(),
       name text not null,
       email text unique,
       phone text unique,
@@ -25,7 +25,7 @@ export async function initDb() {
     );
 
     create table if not exists posts (
-      id uuid primary key default gen_random_uuid(),
+      id uuid primary key default uuid_generate_v4(),
       user_id uuid not null references users(id) on delete cascade,
       content text,
       image_url text,
@@ -41,7 +41,7 @@ export async function initDb() {
     );
 
     create table if not exists comments (
-      id uuid primary key default gen_random_uuid(),
+      id uuid primary key default uuid_generate_v4(),
       user_id uuid not null references users(id) on delete cascade,
       post_id uuid not null references posts(id) on delete cascade,
       content text not null,
