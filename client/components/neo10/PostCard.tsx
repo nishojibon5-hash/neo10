@@ -1,11 +1,15 @@
-import { Heart, MessageCircle, Share2, MoreHorizontal } from "lucide-react";
+import { MessageCircle, Share2, MoreHorizontal } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ReactionButton } from "./Reactions";
+import { Link } from "react-router-dom";
 
 export interface Post {
   id: string;
-  author: { name: string; avatar: string };
+  author: { name: string; avatar: string; id?: string };
   content: string;
+  mode?: "text" | "html";
   image?: string;
+  video?: string;
   createdAt: string;
   likes: number;
   comments: number;
@@ -22,7 +26,7 @@ export default function PostCard({ post }: { post: Post }) {
             <AvatarFallback>{post.author.name[0]}</AvatarFallback>
           </Avatar>
           <div className="leading-tight">
-            <p className="font-semibold">{post.author.name}</p>
+            <Link to={`/profile`} className="font-semibold hover:underline">{post.author.name}</Link>
             <p className="text-xs text-muted-foreground">{post.createdAt}</p>
           </div>
         </div>
@@ -30,19 +34,24 @@ export default function PostCard({ post }: { post: Post }) {
           <MoreHorizontal className="size-5 text-muted-foreground" />
         </button>
       </header>
-      <div className="px-3 pb-3 text-sm whitespace-pre-wrap">{post.content}</div>
+      {post.mode === "html" ? (
+        <div className="px-3 pb-3 text-sm prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: post.content }} />
+      ) : (
+        <div className="px-3 pb-3 text-sm whitespace-pre-wrap">{post.content}</div>
+      )}
       {post.image && (
         <img src={post.image} alt="" className="max-h-[520px] w-full object-cover" />
       )}
+      {post.video && (
+        <video src={post.video} controls className="max-h-[520px] w-full" />
+      )}
       <div className="px-3 py-2 text-xs text-muted-foreground flex items-center gap-4">
-        <span>{post.likes} likes</span>
+        <span>{post.likes} reactions</span>
         <span>{post.comments} comments</span>
         <span>{post.shares} shares</span>
       </div>
       <div className="grid grid-cols-3 divide-x border-t text-sm">
-        <button className="flex items-center justify-center gap-2 py-2.5 hover:bg-muted/60">
-          <Heart className="size-5" /> Like
-        </button>
+        <ReactionButton postId={post.id} initialCount={post.likes} />
         <button className="flex items-center justify-center gap-2 py-2.5 hover:bg-muted/60">
           <MessageCircle className="size-5" /> Comment
         </button>
