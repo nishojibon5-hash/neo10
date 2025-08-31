@@ -12,6 +12,8 @@ import Profile from "./pages/Profile";
 import ProfileEdit from "./pages/ProfileEdit";
 import UserProfile from "./pages/UserProfile";
 import Placeholder from "./pages/Placeholder";
+import AdsCreate from "./pages/AdsCreate";
+import AdsDashboard from "./pages/AdsDashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
