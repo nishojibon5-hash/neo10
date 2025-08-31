@@ -23,6 +23,7 @@ export const getFeed: RequestHandler = async (_req, res) => {
         limit 50`);
     res.json({ posts: rows });
   } catch (e) {
+    console.error('getFeed error', e);
     res.status(500).json({ error: "Failed to load feed" });
   }
 };
