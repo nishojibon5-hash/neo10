@@ -40,7 +40,7 @@ export default function Index() {
   const [feed, setFeed] = useState<Post[]>(defaultFeed);
 
   useEffect(() => {
-    (async () => {
+    const load = async () => {
       try {
         const res = await fetch("/api/feed");
         if (res.ok) {
@@ -59,10 +59,12 @@ export default function Index() {
           }));
           if (mapped.length) setFeed(mapped);
         }
-      } catch {
-        // ignore: backend not configured yet
-      }
-    })();
+      } catch {}
+    };
+    load();
+    const handler = () => load();
+    window.addEventListener("feed:refresh", handler);
+    return () => window.removeEventListener("feed:refresh", handler);
   }, []);
 
   return (
