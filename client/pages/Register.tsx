@@ -5,17 +5,19 @@ import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
 import { setToken, setUser } from "@/lib/auth";
 
-type Form = { name: string; email?: string; phone?: string; password: string; avatar_url?: string };
+type Form = { name: string; identifier: string; password: string };
 
 export default function Register() {
   const { register, handleSubmit } = useForm<Form>();
   const navigate = useNavigate();
 
   const onSubmit = async (values: Form) => {
+    const body: any = { name: values.name, password: values.password };
+    if (values.identifier.includes("@")) body.email = values.identifier; else body.phone = values.identifier;
     const res = await fetch("/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
+      body: JSON.stringify(body),
     });
     const data = await res.json();
     if (res.ok) {
