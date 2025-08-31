@@ -35,9 +35,7 @@ export default function Register() {
         <h1 className="text-2xl font-bold mb-4">Create your NEO10 account</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
           <Input placeholder="Full name" {...register("name", { required: true })} />
-          <Input placeholder="Email (optional)" {...register("email")} />
-          <Input placeholder="Phone (optional)" {...register("phone")} />
-          <Input placeholder="Avatar URL (optional)" {...register("avatar_url")} />
+          <Input placeholder="Phone or Email" {...register("identifier", { required: true })} />
           <Input type="password" placeholder="Password" {...register("password", { required: true })} />
           <Button type="submit" className="w-full">Register</Button>
         </form>
