@@ -18,10 +18,19 @@ export default function Composer() {
         headers: { "Content-Type": "application/json", Authorization: token ? `Bearer ${token}` : "" },
         body: JSON.stringify({ content, content_mode: mode, image_url: image || undefined, video_url: video || undefined, type, monetized }),
       });
+      if (res.status === 401) {
+        alert("Please login to post.");
+        window.location.href = "/login";
+        return;
+      }
       if (res.ok) {
         setContent(""); setImage(""); setVideo(""); setMode("text"); setType("post"); setMonetized(false);
+        window.dispatchEvent(new Event("feed:refresh"));
+      } else {
+        const data = await res.json().catch(()=>({}));
+        alert(data.error ? JSON.stringify(data.error) : "Failed to post");
       }
-    } catch {}
+    } catch { alert("Network error"); }
   };
 
   return (
