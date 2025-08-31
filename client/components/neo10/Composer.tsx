@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useMemo, useState } from "react";
+import { getUser } from "@/lib/auth";
 
 function StepHeader({ title, onClose }: { title: string; onClose: () => void }) {
   return (
@@ -146,8 +147,8 @@ export default function Composer() {
       <div className="rounded-xl border bg-card">
         <div className="p-3 flex items-center gap-3">
           <Avatar className="h-9 w-9">
-            <AvatarImage src="https://i.pravatar.cc/100?img=68" alt="You" />
-            <AvatarFallback>YOU</AvatarFallback>
+            <AvatarImage src={(getUser()?.avatar_url as string) || "https://i.pravatar.cc/100?img=68"} alt={getUser()?.name || "You"} />
+            <AvatarFallback>{(getUser()?.name || "YOU").slice(0,2).toUpperCase()}</AvatarFallback>
           </Avatar>
           <button
             onClick={() => { setExpanded(true); setStep(1); }}
@@ -178,8 +179,8 @@ export default function Composer() {
       {step === 1 ? (
         <div className="p-3 flex items-start gap-3">
           <Avatar className="h-9 w-9">
-            <AvatarImage src="https://i.pravatar.cc/100?img=68" alt="You" />
-            <AvatarFallback>YOU</AvatarFallback>
+            <AvatarImage src={(getUser()?.avatar_url as string) || "https://i.pravatar.cc/100?img=68"} alt={getUser()?.name || "You"} />
+            <AvatarFallback>{(getUser()?.name || "YOU").slice(0,2).toUpperCase()}</AvatarFallback>
           </Avatar>
           <div className="flex-1 space-y-3">
             <div className="flex items-center gap-2 text-xs">
