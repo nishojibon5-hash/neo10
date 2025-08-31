@@ -42,10 +42,10 @@ export default function PostCard({ post }: { post: Post }) {
         <div className="px-3 pb-3 text-sm whitespace-pre-wrap">{post.content}</div>
       )}
       {post.image && (
-        <img src={post.image} alt="" className="max-h-[520px] w-full object-cover" />
+        <img src={post.image} alt="" className="w-full h-auto object-contain" />
       )}
       {post.video && (
-        <video src={post.video} controls className="max-h-[520px] w-full" />
+        <video src={post.video} controls className="w-full h-auto" />
       )}
       {post.monetized ? <AdInline /> : null}
       <div className="px-3 py-2 text-xs text-muted-foreground flex items-center gap-4">
