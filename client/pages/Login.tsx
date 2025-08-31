@@ -34,8 +34,7 @@ export default function Login() {
       <div className="mx-auto max-w-md rounded-xl border bg-card p-6">
         <h1 className="text-2xl font-bold mb-4">Login to NEO10</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-          <Input placeholder="Email (or leave blank)" {...register("email")} />
-          <Input placeholder="Phone (or leave blank)" {...register("phone")} />
+          <Input placeholder="Phone or Email" {...register("identifier", { required: true })} />
           <Input type="password" placeholder="Password" {...register("password", { required: true })} />
           <Button type="submit" className="w-full">Login</Button>
         </form>
