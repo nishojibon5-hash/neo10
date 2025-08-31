@@ -61,6 +61,21 @@ export async function initDb() {
       created_at timestamptz not null default now(),
       primary key (user_id, friend_id)
     )`,
+    `create table if not exists assets (
+      id uuid primary key,
+      user_id uuid not null references users(id) on delete cascade,
+      filename text,
+      mime_type text not null,
+      bytes bytea not null,
+      created_at timestamptz not null default now()
+    )`,
+    `create table if not exists stories (
+      id uuid primary key,
+      user_id uuid not null references users(id) on delete cascade,
+      image_url text,
+      video_url text,
+      created_at timestamptz not null default now()
+    )`,
   ];
   for (const sql of statements) {
     try { await pool.query(sql); } catch (e) { console.error("DB init step failed", e); }
