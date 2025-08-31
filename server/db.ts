@@ -65,6 +65,17 @@ export async function initDb() {
   for (const sql of statements) {
     try { await pool.query(sql); } catch (e) { console.error("DB init step failed", e); }
   }
+  // Migrations for existing databases
+  const alters = [
+    "alter table if exists users add column if not exists username text unique",
+    "alter table if exists posts add column if not exists content_mode text not null default 'text'",
+    "alter table if exists posts add column if not exists video_url text",
+    "alter table if exists posts add column if not exists type text not null default 'post'",
+    "alter table if exists posts add column if not exists monetized boolean not null default false",
+  ];
+  for (const sql of alters) {
+    try { await pool.query(sql); } catch (e) { console.error("DB alter step failed", e); }
+  }
 }
 
 export async function query(text: string, params?: any[]) {
