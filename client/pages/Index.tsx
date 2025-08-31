@@ -8,7 +8,7 @@ const defaultFeed: Post[] = [
   {
     id: "1",
     author: { name: "Ayesha Khan", avatar: "https://i.pravatar.cc/100?img=15" },
-    content: "আজকে ঢাকার আকাশটা দারুণ সুন্দ��! ☁️",
+    content: "আজকে ঢাকার আকাশটা দারুণ সুন্দর! ☁️",
     image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1400&auto=format&fit=crop",
     createdAt: "1h",
     likes: 120,
@@ -49,7 +49,9 @@ export default function Index() {
             id: p.id,
             author: { name: p.user_name, avatar: p.user_avatar || "https://i.pravatar.cc/100?img=12" },
             content: p.content || "",
+            mode: p.content_mode === 'html' ? 'html' : 'text',
             image: p.image_url || undefined,
+            video: p.video_url || undefined,
             createdAt: new Date(p.created_at).toLocaleString(),
             likes: Number(p.likes || 0),
             comments: Number(p.comments || 0),
