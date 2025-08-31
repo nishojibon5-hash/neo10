@@ -2,6 +2,7 @@ import type { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
 import { query } from "../db";
+import { randomUUID } from "crypto";
 
 
 export const getFeed: RequestHandler = async (_req, res) => {
