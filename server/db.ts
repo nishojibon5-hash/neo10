@@ -8,12 +8,9 @@ export const pool = connectionString
 
 export async function initDb() {
   if (!pool) return;
-  await pool.query(`
-    create extension if not exists pgcrypto;
-    create extension if not exists "uuid-ossp";
-
-    create table if not exists users (
-      id uuid primary key default uuid_generate_v4(),
+  const statements = [
+    `create table if not exists users (
+      id uuid primary key,
       name text not null,
       username text unique,
       email text unique,
@@ -23,54 +20,50 @@ export async function initDb() {
       cover_url text,
       bio text,
       created_at timestamptz not null default now()
-    );
-
-    alter table users add column if not exists username text unique;
-
-    create table if not exists posts (
-      id uuid primary key default uuid_generate_v4(),
+    )`,
+    `create table if not exists posts (
+      id uuid primary key,
       user_id uuid not null references users(id) on delete cascade,
       content text,
-      content_mode text not null default 'text', -- 'text' | 'html'
+      content_mode text not null default 'text',
       image_url text,
       video_url text,
-      type text not null default 'post', -- 'post' | 'video' | 'reel'
+      type text not null default 'post',
       monetized boolean not null default false,
       privacy text default 'public',
       created_at timestamptz not null default now()
-    );
-
-    create table if not exists likes (
+    )`,
+    `create table if not exists likes (
       user_id uuid not null references users(id) on delete cascade,
       post_id uuid not null references posts(id) on delete cascade,
       created_at timestamptz not null default now(),
       primary key (user_id, post_id)
-    );
-
-    create table if not exists reactions (
+    )`,
+    `create table if not exists reactions (
       user_id uuid not null references users(id) on delete cascade,
       post_id uuid not null references posts(id) on delete cascade,
       type text not null check (type in ('😆','🥲','🫦','🥴','😡','♥️','🤔','😮')),
       created_at timestamptz not null default now(),
       primary key (user_id, post_id)
-    );
-
-    create table if not exists comments (
-      id uuid primary key default uuid_generate_v4(),
+    )`,
+    `create table if not exists comments (
+      id uuid primary key,
       user_id uuid not null references users(id) on delete cascade,
       post_id uuid not null references posts(id) on delete cascade,
       content text not null,
       created_at timestamptz not null default now()
-    );
-
-    create table if not exists friendships (
+    )`,
+    `create table if not exists friendships (
       user_id uuid not null references users(id) on delete cascade,
       friend_id uuid not null references users(id) on delete cascade,
       status text not null default 'pending',
       created_at timestamptz not null default now(),
       primary key (user_id, friend_id)
-    );
-  `);
+    )`,
+  ];
+  for (const sql of statements) {
+    try { await pool.query(sql); } catch (e) { console.error("DB init step failed", e); }
+  }
 }
 
 export async function query(text: string, params?: any[]) {
