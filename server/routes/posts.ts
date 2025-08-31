@@ -8,13 +8,13 @@ const JWT_SECRET = process.env.JWT_SECRET || "";
 export const getFeed: RequestHandler = async (_req, res) => {
   try {
     const { rows } = await query(
-      `select p.id, p.content, p.image_url, p.created_at,
+      `select p.id, p.content, p.content_mode, p.image_url, p.video_url, p.type, p.monetized, p.created_at,
               u.id as user_id, u.name as user_name, u.avatar_url as user_avatar,
               coalesce(l.likes,0) as likes, coalesce(c.comments,0) as comments
          from posts p
          join users u on u.id = p.user_id
          left join (
-           select post_id, count(*) as likes from likes group by post_id
+           select post_id, count(*) as likes from reactions group by post_id
          ) l on l.post_id = p.id
          left join (
            select post_id, count(*) as comments from comments group by post_id
@@ -29,7 +29,11 @@ export const getFeed: RequestHandler = async (_req, res) => {
 
 const createSchema = z.object({
   content: z.string().optional(),
+  content_mode: z.enum(["text","html"]).default("text"),
   image_url: z.string().url().optional(),
+  video_url: z.string().url().optional(),
+  type: z.enum(["post","video","reel"]).default("post"),
+  monetized: z.boolean().default(false),
 });
 
 export const createPost: RequestHandler = async (req, res) => {
@@ -41,13 +45,52 @@ export const createPost: RequestHandler = async (req, res) => {
 
     const body = createSchema.parse(req.body);
     const { rows } = await query(
-      `insert into posts (user_id, content, image_url) values ($1,$2,$3)
+      `insert into posts (user_id, content, content_mode, image_url, video_url, type, monetized)
+       values ($1,$2,$3,$4,$5,$6,$7)
        returning id, created_at`,
-      [payload.sub, body.content ?? null, body.image_url ?? null],
+      [payload.sub, body.content ?? null, body.content_mode, body.image_url ?? null, body.video_url ?? null, body.type, body.monetized],
     );
     res.json({ id: rows[0].id });
   } catch (e) {
     if (e instanceof z.ZodError) return res.status(400).json({ error: e.flatten() });
     res.status(500).json({ error: "Failed to create post" });
+  }
+};
+
+const reactSchema = z.object({ type: z.enum(["😆","🥲","🫦","🥴","😡","♥️","🤔","😮"]) });
+
+export const reactPost: RequestHandler = async (req, res) => {
+  try {
+    const auth = req.headers.authorization || "";
+    const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+    if (!token || !JWT_SECRET) return res.status(401).json({ error: "Unauthorized" });
+    const payload = jwt.verify(token, JWT_SECRET) as { sub: string };
+
+    const { type } = reactSchema.parse(req.body);
+    const postId = req.params.id;
+    await query(
+      `insert into reactions (user_id, post_id, type)
+       values ($1,$2,$3)
+       on conflict (user_id, post_id) do update set type=excluded.type`,
+      [payload.sub, postId, type],
+    );
+    res.json({ ok: true });
+  } catch (e) {
+    if (e instanceof z.ZodError) return res.status(400).json({ error: e.flatten() });
+    res.status(500).json({ error: "Failed to react" });
+  }
+};
+
+export const unreactPost: RequestHandler = async (req, res) => {
+  try {
+    const auth = req.headers.authorization || "";
+    const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+    if (!token || !JWT_SECRET) return res.status(401).json({ error: "Unauthorized" });
+    const payload = jwt.verify(token, JWT_SECRET) as { sub: string };
+    const postId = req.params.id;
+    await query(`delete from reactions where user_id=$1 and post_id=$2`, [payload.sub, postId]);
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: "Failed to remove reaction" });
   }
 };
