@@ -30,8 +30,8 @@ const App = () => (
           <Route path="/notifications" element={<Placeholder title="Notifications" />} />
           <Route path="/messages" element={<Placeholder title="Messenger" />} />
           <Route path="/create" element={<Placeholder title="Create" />} />
-          <Route path="/login" element={<Placeholder title="Login" />} />
-          <Route path="/register" element={<Placeholder title="Register" />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/search" element={<Placeholder title="Search" />} />
           <Route path="/ads/create" element={<Placeholder title="Create Ads" />} />
           <Route path="/admin" element={<Placeholder title="Admin Panel" />} />
