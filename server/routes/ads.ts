@@ -24,6 +24,7 @@ const createSchema = z.object({
   end_at: z.string().datetime().optional(),
   payment_method: z.string().optional(),
   transaction_id: z.string().optional(),
+  trial: z.boolean().optional(),
 });
 
 export const createAd: RequestHandler = async (req, res) => {
@@ -33,8 +34,9 @@ export const createAd: RequestHandler = async (req, res) => {
     const data = createSchema.parse(req.body);
     const id = randomUUID();
     const paid = Boolean(data.payment_method && data.transaction_id);
-    const status = paid ? "active" : "pending";
-    const trialUntil = paid ? new Date(Date.now() + 2 * 24 * 3600 * 1000) : null;
+    const trialSelected = Boolean(data.trial);
+    const status = (paid || trialSelected) ? "active" : "pending";
+    const trialUntil = trialSelected ? new Date(Date.now() + 2 * 24 * 3600 * 1000) : null;
     await query(
       `insert into ads (id, user_id, title, media_url, media_type, destination_url, locations, audience, budget, start_at, end_at, status, trial_until, payment_method, transaction_id)
        values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`,
@@ -52,7 +54,11 @@ export const listMyAds: RequestHandler = async (req, res) => {
     const sub = authSub(req);
     if (!sub) return res.status(401).json({ error: "Unauthorized" });
     const { rows } = await query(
-      `select a.*, coalesce(i.cnt,0) as impressions
+      `select a.*, coalesce(i.cnt,0) as impressions,
+              case
+                when a.trial_until is not null and now() > a.trial_until and (a.payment_method is null or a.transaction_id is null) then 'invoice_due'
+                else a.status
+              end as effective_status
          from ads a
          left join (select ad_id, count(*) as cnt from ad_impressions group by ad_id) i on i.ad_id=a.id
         where a.user_id=$1 order by a.created_at desc`,
@@ -93,14 +99,16 @@ export const addImpression: RequestHandler = async (req, res) => {
   }
 };
 
-const patchSchema = z.object({ status: z.enum(["active","paused","pending"]).optional() });
+const patchSchema = z.object({ status: z.enum(["active","paused","pending"]).optional(), payment_method: z.string().optional(), transaction_id: z.string().optional() });
 export const patchAd: RequestHandler = async (req, res) => {
   try {
     const sub = authSub(req);
     if (!sub) return res.status(401).json({ error: "Unauthorized" });
     const id = req.params.id;
     const data = patchSchema.parse(req.body ?? {});
-    const { rows } = await query(`update ads set status=coalesce($1,status) where id=$2 and user_id=$3 returning *`, [data.status ?? null, id, sub]);
+    const paid = Boolean(data.payment_method && data.transaction_id);
+    const status = paid ? 'active' : data.status ?? null;
+    const { rows } = await query(`update ads set status=coalesce($1,status), payment_method=coalesce($2,payment_method), transaction_id=coalesce($3,transaction_id), trial_until=case when $2 is not null and $3 is not null then null else trial_until end where id=$4 and user_id=$5 returning *`, [status, data.payment_method ?? null, data.transaction_id ?? null, id, sub]);
     if (!rows[0]) return res.status(404).json({ error: "Not found" });
     res.json({ ad: rows[0] });
   } catch {
