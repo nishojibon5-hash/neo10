@@ -22,7 +22,7 @@ export function createServer() {
 
   // Health
   app.get("/api/health", (_req, res) => {
-    res.json({ ok: true, db: Boolean(process.env.POSTGRES_URL || process.env.DATABASE_URL) });
+    res.json({ ok: true, db: Boolean(process.env.POSTGRES_URL || process.env.DATABASE_URL), jwt: Boolean(process.env.JWT_SECRET) });
   });
 
   // Example API routes
