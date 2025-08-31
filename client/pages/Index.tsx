@@ -2,8 +2,9 @@ import Layout from "@/components/neo10/Layout";
 import Stories from "@/components/neo10/Stories";
 import Composer from "@/components/neo10/Composer";
 import PostCard, { type Post } from "@/components/neo10/PostCard";
+import { useEffect, useState } from "react";
 
-const feed: Post[] = [
+const defaultFeed: Post[] = [
   {
     id: "1",
     author: { name: "Ayesha Khan", avatar: "https://i.pravatar.cc/100?img=15" },
