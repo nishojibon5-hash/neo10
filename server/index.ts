@@ -45,5 +45,12 @@ export function createServer() {
   app.post("/api/posts/:id/react", reactPost);
   app.delete("/api/posts/:id/react", unreactPost);
 
+  // Users
+  app.get("/api/users/:id", getUser);
+  app.get("/api/users/:id/posts", getUserPosts);
+  app.patch("/api/users/me", updateMe);
+  app.post("/api/users/:id/follow", follow);
+  app.post("/api/users/:id/accept", accept);
+
   return app;
 }
