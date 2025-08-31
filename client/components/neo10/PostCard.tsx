@@ -18,7 +18,7 @@ export interface Post {
 
 export default function PostCard({ post }: { post: Post }) {
   return (
-    <article className="rounded-xl border bg-card overflow-hidden">
+    <article className="rounded-xl border bg-card overflow-visible">
       <header className="flex items-center justify-between p-3">
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10">
