@@ -56,5 +56,13 @@ export function createServer() {
   app.post("/api/users/:id/follow", follow);
   app.post("/api/users/:id/accept", accept);
 
+  // Assets
+  app.post("/api/assets/base64", uploadBase64);
+  app.get("/api/assets/:id", getAsset);
+
+  // Stories
+  app.get("/api/stories", listStories);
+  app.post("/api/stories", createStory);
+
   return app;
 }
