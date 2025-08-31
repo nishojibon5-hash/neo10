@@ -4,8 +4,6 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { query } from "../db";
 
-const JWT_SECRET = process.env.JWT_SECRET || "";
-
 const registerSchema = z.object({
   name: z.string().min(2),
   email: z.string().email().optional(),
@@ -17,6 +15,7 @@ const registerSchema = z.object({
 export const register: RequestHandler = async (req, res) => {
   try {
     const data = registerSchema.parse(req.body);
+    const JWT_SECRET = process.env.JWT_SECRET;
     if (!JWT_SECRET) return res.status(500).json({ error: "Server missing JWT_SECRET" });
 
     const hash = await bcrypt.hash(data.password, 10);
@@ -47,6 +46,7 @@ const loginSchema = z.object({
 export const login: RequestHandler = async (req, res) => {
   try {
     const data = loginSchema.parse(req.body);
+    const JWT_SECRET = process.env.JWT_SECRET;
     if (!JWT_SECRET) return res.status(500).json({ error: "Server missing JWT_SECRET" });
     const by = data.email ? "email" : "phone";
     const value = data.email ?? data.phone ?? "";
@@ -71,6 +71,7 @@ export const login: RequestHandler = async (req, res) => {
 
 export const me: RequestHandler = async (req, res) => {
   try {
+    const JWT_SECRET = process.env.JWT_SECRET;
     const auth = req.headers.authorization || "";
     const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
     if (!token || !JWT_SECRET) return res.status(401).json({ error: "Unauthorized" });
