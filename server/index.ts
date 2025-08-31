@@ -5,6 +5,7 @@ import { handleDemo } from "./routes/demo";
 import { initDb } from "./db";
 import { register, login, me } from "./routes/auth";
 import { getFeed, createPost, reactPost, unreactPost } from "./routes/posts";
+import { getUser, getUserPosts, updateMe, follow, accept } from "./routes/users";
 import dotenv from "dotenv";
 
 dotenv.config();
