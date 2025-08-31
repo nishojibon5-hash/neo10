@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { query } from "../db";
+import { randomUUID } from "crypto";
 
 function normalize(input?: string | null) {
   if (!input) return null;
