@@ -33,11 +33,12 @@ export const register: RequestHandler = async (req, res) => {
     const email = normalize(data.email ?? null);
     const phone = normalize(data.phone ?? null);
 
+    const id = randomUUID();
     const { rows } = await query(
-      `insert into users (name, email, phone, password_hash, avatar_url)
-       values ($1,$2,$3,$4,$5)
+      `insert into users (id, name, email, phone, password_hash, avatar_url)
+       values ($1,$2,$3,$4,$5,$6)
        returning id, name, email, avatar_url`,
-      [data.name.trim(), email, phone, hash, data.avatar_url ?? null],
+      [id, data.name.trim(), email, phone, hash, data.avatar_url ?? null],
     );
 
     const user = rows[0];
