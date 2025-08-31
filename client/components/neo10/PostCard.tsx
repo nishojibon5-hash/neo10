@@ -26,7 +26,7 @@ export default function PostCard({ post }: { post: Post }) {
             <AvatarFallback>{post.author.name[0]}</AvatarFallback>
           </Avatar>
           <div className="leading-tight">
-            <Link to={`/profile`} className="font-semibold hover:underline">{post.author.name}</Link>
+            <Link to={`/u/${post.author.id ?? ''}`} className="font-semibold hover:underline">{post.author.name}</Link>
             <p className="text-xs text-muted-foreground">{post.createdAt}</p>
           </div>
         </div>
