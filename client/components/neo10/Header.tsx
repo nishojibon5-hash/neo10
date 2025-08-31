@@ -93,6 +93,28 @@ export default function Header() {
           >
             <PlusCircle className="size-5" />
           </NavLink>
+          {logged ? (
+            <button
+              onClick={() => { clearToken(); setLogged(false); }}
+              className="inline-flex items-center justify-center rounded-full h-10 w-10 text-muted-foreground hover:text-foreground hover:bg-muted/60"
+              title="Logout"
+            >
+              <LogOut className="size-5" />
+            </button>
+          ) : (
+            <NavLink
+              to="/login"
+              className={({ isActive }) =>
+                cn(
+                  "inline-flex items-center justify-center rounded-full h-10 w-10 text-muted-foreground hover:text-foreground hover:bg-muted/60",
+                  isActive && "text-primary bg-primary/10 hover:bg-primary/15"
+                )
+              }
+              title="Login"
+            >
+              <LogIn className="size-5" />
+            </NavLink>
+          )}
         </nav>
       </div>
     </header>
