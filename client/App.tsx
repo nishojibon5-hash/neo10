@@ -24,6 +24,8 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/edit" element={<ProfileEdit />} />
+          <Route path="/u/:id" element={<UserProfile />} />
           <Route path="/friends" element={<Placeholder title="Friends" />} />
           <Route path="/videos" element={<Placeholder title="Videos" />} />
           <Route path="/marketplace" element={<Placeholder title="Marketplace" />} />
