@@ -42,6 +42,7 @@ const App = () => (
           <Route path="/ads/create" element={<AdsCreate />} />
           <Route path="/admin" element={<Placeholder title="Admin Panel" />} />
           <Route path="/settings" element={<Placeholder title="Settings" />} />
+          <Route path="/ads/dashboard" element={<AdsDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
