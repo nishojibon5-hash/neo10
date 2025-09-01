@@ -20,6 +20,18 @@ export interface Post {
   monetized?: boolean;
 }
 
+function sanitizeHtml(html: string) {
+  const replaceSrc = (match: string, p1: string, url: string) => {
+    const fixed = url.startsWith("//") ? `https:${url}` : url;
+    if (/^https:\/\//i.test(fixed)) return `${p1}"${fixed}"`;
+    if (/^http:\/\//i.test(fixed)) return `${p1}"/api/proxy?url=${encodeURIComponent(fixed)}"`;
+    return match;
+  };
+  return html
+    .replace(/(src=\")[^\"]+(\")/gi, (m) => m.replace(/src=\"([^\"]+)\"/i, (mm, u) => replaceSrc('src="', u)))
+    .replace(/(poster=\")[^\"]+(\")/gi, (m) => m.replace(/poster=\"([^\"]+)\"/i, (mm, u) => replaceSrc('poster="', u)));
+}
+
 export default function PostCard({ post }: { post: Post }) {
   const share = async () => {
     const url = window.location.href.split('#')[0];
