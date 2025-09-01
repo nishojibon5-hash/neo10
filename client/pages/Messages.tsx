@@ -10,6 +10,7 @@ interface Conversation { id: string; peer_id: string; peer_name: string; peer_av
 interface Message { id: string; sender_id: string; content?: string; content_type?: string; attachment_url?: string; attachment_type?: string; created_at: string; }
 
 export default function Messages() {
+  const location = useLocation();
   const [convs, setConvs] = useState<Conversation[]>([]);
   const [active, setActive] = useState<Conversation | null>(null);
   const [msgs, setMsgs] = useState<Message[]>([]);
