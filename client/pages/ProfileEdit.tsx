@@ -25,13 +25,21 @@ export default function ProfileEdit() {
 
   const pickAvatar = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0]; if (!f) return;
-    const url = await uploadAsset(f);
-    setValue("avatar_url", url, { shouldDirty: true, shouldTouch: true });
+    try {
+      const url = await uploadAsset(f);
+      setValue("avatar_url", url, { shouldDirty: true, shouldTouch: true });
+    } catch (e: any) {
+      alert(e?.message || "Avatar upload failed");
+    }
   };
   const pickCover = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0]; if (!f) return;
-    const url = await uploadAsset(f);
-    setValue("cover_url", url, { shouldDirty: true, shouldTouch: true });
+    try {
+      const url = await uploadAsset(f);
+      setValue("cover_url", url, { shouldDirty: true, shouldTouch: true });
+    } catch (e: any) {
+      alert(e?.message || "Cover upload failed");
+    }
   };
 
   return (
