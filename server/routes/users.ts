@@ -13,26 +13,31 @@ function authSub(req: any) {
 
 export const getUser: RequestHandler = async (req, res) => {
   try {
-    const id = req.params.id;
+    const idOrUsername = String(req.params.id || "");
     const { rows } = await query(
-      `select id, name, username, email, avatar_url, cover_url, bio, created_at from users where id=$1 or username=$1 limit 1`,
-      [id],
+      `select id, name, username, email, avatar_url, cover_url, bio, created_at
+         from users
+        where id::text = $1 or username = $1
+        limit 1`,
+      [idOrUsername],
     );
     if (!rows[0]) return res.status(404).json({ error: "User not found" });
     res.json({ user: rows[0] });
-  } catch {
+  } catch (e) {
     res.status(500).json({ error: "Failed to load user" });
   }
 };
 
 export const getUserPosts: RequestHandler = async (req, res) => {
   try {
-    const id = req.params.id;
+    const idOrUsername = String(req.params.id || "");
     const { rows } = await query(
       `select p.id, p.content, p.content_mode, p.image_url, p.video_url, p.type, p.monetized, p.created_at,
               u.id as user_id, u.name as user_name, u.avatar_url as user_avatar
-         from posts p join users u on u.id=p.user_id where p.user_id=$1 order by p.created_at desc limit 50`,
-      [id],
+         from posts p join users u on u.id=p.user_id
+        where u.id::text = $1 or u.username = $1
+        order by p.created_at desc limit 50`,
+      [idOrUsername],
     );
     res.json({ posts: rows });
   } catch {
