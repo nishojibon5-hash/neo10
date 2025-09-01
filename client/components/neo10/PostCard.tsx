@@ -4,6 +4,7 @@ import { ReactionButton } from "./Reactions";
 import AdInline from "./AdInline";
 import { Link } from "react-router-dom";
 import Comments from "./Comments";
+import { useState } from "react";
 
 export interface Post {
   id: string;
