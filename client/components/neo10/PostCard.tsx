@@ -52,7 +52,7 @@ export default function PostCard({ post }: { post: Post }) {
         <div className="px-3 pb-3 text-sm whitespace-pre-wrap">{post.content}</div>
       )}
       {post.image && (
-        <img src={post.image} alt="" className="w-full h-auto object-contain" />
+        <img src={post.image} alt="" className="max-w-full h-auto" />
       )}
       {post.video && (
         <video src={post.video} controls className="w-full h-auto" />
