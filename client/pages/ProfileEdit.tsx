@@ -2,7 +2,7 @@ import Layout from "@/components/neo10/Layout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import { getToken } from "@/lib/auth";
+import { getToken, setUser } from "@/lib/auth";
 import { uploadAsset } from "@/lib/upload";
 
 type Form = { name?: string; username?: string; avatar_url?: string; cover_url?: string; bio?: string };
@@ -17,7 +17,7 @@ export default function ProfileEdit() {
       body: JSON.stringify(values),
     });
     const data = await res.json();
-    if (res.ok) alert("Saved"); else alert(data.error || "Failed");
+    if (res.ok) { setUser(data.user); alert("Saved"); } else alert(data.error || "Failed");
   };
 
   const avatar = watch("avatar_url");
