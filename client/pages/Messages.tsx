@@ -39,8 +39,8 @@ export default function Messages() {
         if (r.ok) {
           await loadConvs();
           const d = await r.json().catch(()=>({}));
-          const convId = d.id as string | undefined;
-          if (convId) setActive((prev)=> prev && prev.id===convId ? prev : { id: convId, peer_id: uid, peer_name: '' });
+          const convId = (d.conversation && d.conversation.id) as string | undefined;
+          if (convId) setActive((prev)=> prev && prev.id===convId ? prev : { id: convId, peer_id: uid, peer_name: d.conversation?.peer_name || '' });
         }
       } catch {}
     })();
