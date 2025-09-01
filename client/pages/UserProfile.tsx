@@ -70,7 +70,7 @@ export default function UserProfile() {
                 <p className="text-sm text-muted-foreground">{user.bio || '—'}</p>
               </div>
               <div className="flex gap-2">
-                <Button asChild variant="secondary"><Link to="/messages">Message</Link></Button>
+                <Button asChild variant="secondary"><Link to={`/messages?user=${id}`}>Message</Link></Button>
                 <FollowButton userId={String(id)} />
               </div>
             </div>
