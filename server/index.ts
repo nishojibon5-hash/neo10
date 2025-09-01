@@ -9,6 +9,7 @@ import { getUser, getUserPosts, updateMe, follow, accept } from "./routes/users"
 import { uploadBase64, getAsset } from "./routes/assets";
 import { listStories, createStory } from "./routes/stories";
 import { createAd, listMyAds, getActiveAd, addImpression, patchAd } from "./routes/ads";
+import { ensureConversation, listConversations, listMessages, sendMessage } from "./routes/messages";
 import dotenv from "dotenv";
 
 dotenv.config();
