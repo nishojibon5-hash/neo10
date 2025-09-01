@@ -100,6 +100,23 @@ export async function initDb() {
       placement text,
       created_at timestamptz not null default now()
     )`,
+    `create table if not exists conversations (
+      id uuid primary key,
+      user_a uuid not null references users(id) on delete cascade,
+      user_b uuid not null references users(id) on delete cascade,
+      created_at timestamptz not null default now(),
+      unique (user_a, user_b)
+    )`,
+    `create table if not exists messages (
+      id uuid primary key,
+      conv_id uuid not null references conversations(id) on delete cascade,
+      sender_id uuid not null references users(id) on delete cascade,
+      content text,
+      content_type text default 'text',
+      attachment_url text,
+      attachment_type text check (attachment_type in ('image','video','audio')),
+      created_at timestamptz not null default now()
+    )`,
   ];
   for (const sql of statements) {
     try { await pool.query(sql); } catch (e) { console.error("DB init step failed", e); }
