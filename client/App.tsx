@@ -14,6 +14,7 @@ import UserProfile from "./pages/UserProfile";
 import Placeholder from "./pages/Placeholder";
 import AdsCreate from "./pages/AdsCreate";
 import AdsDashboard from "./pages/AdsDashboard";
+import Messages from "./pages/Messages";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import RequireAuth from "./lib/RequireAuth";
