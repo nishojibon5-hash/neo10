@@ -26,7 +26,7 @@ export default function PostCard({ post }: { post: Post }) {
     const link = `${url}#post-${post.id}`;
     try { if ((navigator as any).share) { await (navigator as any).share({ title: 'Post', url: link }); } else { await navigator.clipboard.writeText(link); alert('Link copied'); } } catch {}
   };
-  const [openComments, setOpenComments] = (window as any).useState ? (window as any).useState(false) : require('react').useState(false);
+  const [openComments, setOpenComments] = useState(false);
   return (
     <article id={`post-${post.id}`} className="rounded-xl border bg-card overflow-visible">
       <header className="flex items-center justify-between p-3">
