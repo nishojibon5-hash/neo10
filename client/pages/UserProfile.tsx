@@ -8,31 +8,39 @@ export default function UserProfile() {
   const { id } = useParams<{ id: string }>();
   const [user, setUser] = useState<any>(null);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const u = await fetch(`/api/users/${id}`).then((r) => r.json()).catch(() => null);
-      if (u?.user) setUser(u.user);
-      const p = await fetch(`/api/users/${id}/posts`).then((r) => r.json()).catch(() => null);
-      if (p?.posts) {
-        const mapped: Post[] = p.posts.map((x: any) => ({
-          id: x.id,
-          author: { id: x.user_id, name: x.user_name, avatar: x.user_avatar },
-          content: x.content || "",
-          mode: x.content_mode === 'html' ? 'html' : 'text',
-          image: x.image_url || undefined,
-          video: x.video_url || undefined,
-          createdAt: new Date(x.created_at).toLocaleString(),
-          likes: 0, comments: 0, shares: 0,
-        }));
-        setPosts(mapped);
+      try {
+        const ur = await fetch(`/api/users/${id}`);
+        if (ur.ok) { const uj = await ur.json(); setUser(uj.user); }
+        const pr = await fetch(`/api/users/${id}/posts`);
+        if (pr.ok) {
+          const p = await pr.json();
+          const mapped: Post[] = (p.posts || []).map((x: any) => ({
+            id: x.id,
+            author: { id: x.user_id, name: x.user_name, avatar: x.user_avatar },
+            content: x.content || "",
+            mode: x.content_mode === 'html' ? 'html' : 'text',
+            image: x.image_url || undefined,
+            video: x.video_url || undefined,
+            createdAt: new Date(x.created_at).toLocaleString(),
+            likes: 0, comments: 0, shares: 0,
+          }));
+          setPosts(mapped);
+        }
+      } finally {
+        setLoaded(true);
       }
     })();
   }, [id]);
 
   return (
     <Layout>
-      {!user ? (
+      {!user && loaded ? (
+        <div className="rounded-xl border bg-card p-8">User not found</div>
+      ) : !user ? (
         <div className="rounded-xl border bg-card p-8">Loading...</div>
       ) : (
         <div className="space-y-4">
