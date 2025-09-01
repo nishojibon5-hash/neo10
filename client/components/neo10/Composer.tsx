@@ -94,11 +94,20 @@ export default function Composer() {
     setMonetized(false);
   };
 
-  const handleNext = () => {
-    const parsed = parseMediaInput(mediaInput);
+  const handleNext = async () => {
+    let parsed = parseMediaInput(mediaInput);
+    if (!parsed.imageUrl && !parsed.html && /^https?:\/\//i.test(mediaInput.trim())) {
+      try {
+        const r = await fetch(`/api/resolve?url=${encodeURIComponent(mediaInput.trim())}`);
+        if (r.ok) {
+          const d = await r.json();
+          if (d.kind === 'image') parsed = { imageUrl: d.url };
+          else if (d.kind === 'video') parsed = { html: `<video src="${d.url}" class="w-full rounded-lg" controls playsinline />` };
+        }
+      } catch {}
+    }
     setImage(parsed.imageUrl || "");
     setEmbedHtml(parsed.html || "");
-    // If we detected HTML embed, force HTML mode for submission composition
     if (parsed.html && mode !== "html") setMode("html");
     setStep(2);
   };
