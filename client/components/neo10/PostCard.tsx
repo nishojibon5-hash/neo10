@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ReactionButton } from "./Reactions";
 import AdInline from "./AdInline";
 import { Link } from "react-router-dom";
+import Comments from "./Comments";
 
 export interface Post {
   id: string;
@@ -19,14 +20,22 @@ export interface Post {
 }
 
 export default function PostCard({ post }: { post: Post }) {
+  const share = async () => {
+    const url = window.location.href.split('#')[0];
+    const link = `${url}#post-${post.id}`;
+    try { if ((navigator as any).share) { await (navigator as any).share({ title: 'Post', url: link }); } else { await navigator.clipboard.writeText(link); alert('Link copied'); } } catch {}
+  };
+  const [openComments, setOpenComments] = (window as any).useState ? (window as any).useState(false) : require('react').useState(false);
   return (
-    <article className="rounded-xl border bg-card overflow-visible">
+    <article id={`post-${post.id}`} className="rounded-xl border bg-card overflow-visible">
       <header className="flex items-center justify-between p-3">
         <div className="flex items-center gap-3">
-          <Avatar className="h-10 w-10">
-            <AvatarImage src={post.author.avatar} alt={post.author.name} />
-            <AvatarFallback>{post.author.name[0]}</AvatarFallback>
-          </Avatar>
+          <Link to={post.author.id ? `/u/${post.author.id}` : "/profile"} className="rounded-full">
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={post.author.avatar} alt={post.author.name} />
+              <AvatarFallback>{post.author.name[0]}</AvatarFallback>
+            </Avatar>
+          </Link>
           <div className="leading-tight">
             <Link to={post.author.id ? `/u/${post.author.id}` : "/profile"} className="font-semibold hover:underline">{post.author.name}</Link>
             <p className="text-xs text-muted-foreground">{post.createdAt}</p>
@@ -55,13 +64,14 @@ export default function PostCard({ post }: { post: Post }) {
       </div>
       <div className="grid grid-cols-3 divide-x border-t text-sm">
         <ReactionButton postId={post.id} initialCount={post.likes} />
-        <button className="flex items-center justify-center gap-2 py-2.5 hover:bg-muted/60">
+        <button className="flex items-center justify-center gap-2 py-2.5 hover:bg-muted/60" onClick={() => setOpenComments((v: boolean) => !v)}>
           <MessageCircle className="size-5" /> Comment
         </button>
-        <button className="flex items-center justify-center gap-2 py-2.5 hover:bg-muted/60">
+        <button className="flex items-center justify-center gap-2 py-2.5 hover:bg-muted/60" onClick={share}>
           <Share2 className="size-5" /> Share
         </button>
       </div>
+      {openComments ? <Comments postId={post.id} /> : null}
     </article>
   );
 }
