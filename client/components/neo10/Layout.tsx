@@ -12,6 +12,11 @@ export default function Layout({ children }: { children: ReactNode }) {
           <RightSidebar />
         </aside>
       </main>
+      {/* Floating chat head */}
+      <div id="chat-head-root">
+        {/* @ts-ignore */}
+        {require('./ChatHead').default ? require('./ChatHead').default() : null}
+      </div>
     </div>
   );
 }
