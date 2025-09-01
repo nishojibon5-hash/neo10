@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import MobileNav from "./MobileNav";
 import { getUser, clearToken } from "@/lib/auth";
+import { useEffect, useState } from "react";
 
 function MenuContent({ onNavigate }: { onNavigate: (to: string) => void }) {
   return (
@@ -31,8 +32,15 @@ function MenuContent({ onNavigate }: { onNavigate: (to: string) => void }) {
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
-  const user = getUser();
+  const [user, setUserState] = useState(getUser());
   const canGoBack = location.pathname !== "/";
+
+  useEffect(() => {
+    const update = () => setUserState(getUser());
+    window.addEventListener("auth:change", update);
+    window.addEventListener("storage", update);
+    return () => { window.removeEventListener("auth:change", update); window.removeEventListener("storage", update); };
+  }, []);
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b bg-card/80 backdrop-blur supports-[backdrop-filter]:bg-card/60">
