@@ -90,6 +90,10 @@ export const accept: RequestHandler = async (req, res) => {
       `update friendships set status='friends' where user_id=$1 and friend_id=$2`,
       [requester, sub],
     );
+    try {
+      const { randomUUID } = await import('crypto');
+      await query(`insert into notifications (id, user_id, type, data) values ($1,$2,'friend_accept',$3)`, [randomUUID(), requester, JSON.stringify({ by: sub })]);
+    } catch {}
     res.json({ ok: true });
   } catch {
     res.status(500).json({ error: "Failed to accept" });
