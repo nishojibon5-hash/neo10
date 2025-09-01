@@ -15,13 +15,15 @@ export function ReactionPicker({ onPick }: { onPick: (r: ReactionType) => void }
   );
 }
 
-export function ReactionButton({ postId, initialCount = 0 }: { postId: string; initialCount?: number }) {
+export function ReactionButton({ postId, initialCount = 0, initialReaction }: { postId: string; initialCount?: number; initialReaction?: ReactionType }) {
   const [open, setOpen] = useState(false);
   const [count, setCount] = useState(initialCount);
+  const [selected, setSelected] = useState<ReactionType | null>(initialReaction || null);
   let pressTimer: any = null;
 
   const send = async (emoji: ReactionType) => {
     setOpen(false);
+    setSelected(emoji);
     try {
       const token = localStorage.getItem("token") || "";
       const res = await fetch(`/api/posts/${postId}/react`, {
@@ -30,7 +32,10 @@ export function ReactionButton({ postId, initialCount = 0 }: { postId: string; i
         body: JSON.stringify({ type: emoji }),
       });
       if (res.status === 401) { window.location.href = "/login"; return; }
-      if (res.ok) setCount((c) => (c || 0) + 1);
+      if (res.ok) {
+        const data = await res.json().catch(() => ({}));
+        if (data.created) setCount((c) => (c || 0) + 1);
+      }
     } catch {}
   };
 
