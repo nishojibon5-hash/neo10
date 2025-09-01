@@ -16,6 +16,7 @@ import AdsCreate from "./pages/AdsCreate";
 import AdsDashboard from "./pages/AdsDashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import RequireAuth from "./lib/RequireAuth";
 
 const queryClient = new QueryClient();
 
