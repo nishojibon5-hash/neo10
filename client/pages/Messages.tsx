@@ -27,6 +27,23 @@ export default function Messages() {
   useEffect(() => { loadConvs(); }, []);
   useEffect(() => { if (active) loadMsgs(active.id); }, [active?.id]);
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const uid = params.get('user') || params.get('userId');
+    (async () => {
+      if (!uid) return;
+      try {
+        const r = await fetch(`/api/messages/ensure/${uid}`, { method: 'POST', headers: { Authorization: `Bearer ${getToken()}` } });
+        if (r.ok) {
+          await loadConvs();
+          const d = await r.json().catch(()=>({}));
+          const convId = d.id as string | undefined;
+          if (convId) setActive((prev)=> prev && prev.id===convId ? prev : { id: convId, peer_id: uid, peer_name: '' });
+        }
+      } catch {}
+    })();
+  }, []);
+
   const send = async (payload: Partial<Message>) => {
     if (!active) return;
     const body: any = { content: payload.content ?? undefined, content_type: payload.content_type ?? undefined, attachment_url: payload.attachment_url ?? undefined, attachment_type: payload.attachment_type ?? undefined };
