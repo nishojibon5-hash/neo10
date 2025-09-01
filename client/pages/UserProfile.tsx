@@ -3,6 +3,23 @@ import PostCard, { type Post } from "@/components/neo10/PostCard";
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { getToken } from "@/lib/auth";
+
+function FollowButton({ userId }: { userId: string }) {
+  const [state, setState] = useState<'idle' | 'pending' | 'following'>('idle');
+  const follow = async () => {
+    if (state !== 'idle') return;
+    try {
+      const token = getToken();
+      const res = await fetch(`/api/users/${userId}/follow`, { method: 'POST', headers: { Authorization: token ? `Bearer ${token}` : '' } });
+      if (res.status === 401) { window.location.href = '/login'; return; }
+      if (res.ok) setState('pending');
+    } catch {}
+  };
+  return (
+    <Button onClick={follow} disabled={state !== 'idle'}>{state === 'pending' ? 'Requested' : 'Follow'}</Button>
+  );
+}
 
 export default function UserProfile() {
   const { id } = useParams<{ id: string }>();
@@ -54,7 +71,7 @@ export default function UserProfile() {
               </div>
               <div className="flex gap-2">
                 <Button asChild variant="secondary"><Link to="/messages">Message</Link></Button>
-                <Button asChild><Link to={`/u/${id}?action=follow`}>Follow</Link></Button>
+                <FollowButton userId={String(id)} />
               </div>
             </div>
           </div>

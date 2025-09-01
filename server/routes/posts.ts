@@ -111,6 +111,7 @@ export const reactPost: RequestHandler = async (req, res) => {
 
     const { type } = reactSchema.parse(req.body);
     const postId = req.params.id;
+    const existed = await query(`select 1 from reactions where user_id=$1 and post_id=$2 limit 1`, [payload.sub, postId]);
     await query(
       `insert into reactions (user_id, post_id, type)
        values ($1,$2,$3)
@@ -125,7 +126,7 @@ export const reactPost: RequestHandler = async (req, res) => {
         await query(`insert into notifications (id, user_id, type, data) values ($1,$2,'reaction', $3)`, [randomUUID(), owner, JSON.stringify({ post_id: postId, by: payload.sub, type })]);
       }
     } catch {}
-    res.json({ ok: true });
+    res.json({ ok: true, created: existed.rowCount === 0, type });
   } catch (e) {
     if (e instanceof z.ZodError) return res.status(400).json({ error: e.flatten() });
     res.status(500).json({ error: "Failed to react" });
