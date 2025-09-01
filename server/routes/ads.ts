@@ -14,9 +14,9 @@ function authSub(req: any) {
 
 const createSchema = z.object({
   title: z.string().min(3),
-  media_url: z.string().url().optional(),
+  media_url: z.string().min(1).optional(), // allow relative like /api/assets/...
   media_type: z.enum(["image","video"]).optional(),
-  destination_url: z.string().url().optional(),
+  destination_url: z.string().min(1).optional(), // allow relative/absolute
   locations: z.string().optional(),
   audience: z.string().optional(),
   budget: z.number().optional(),
