@@ -73,5 +73,11 @@ export function createServer() {
   app.post("/api/ads/:id/impression", addImpression);
   app.patch("/api/ads/:id", patchAd);
 
+  // Messaging
+  app.post("/api/messages/ensure/:userId", ensureConversation);
+  app.get("/api/messages/conversations", listConversations);
+  app.get("/api/messages/:id", listMessages);
+  app.post("/api/messages/:id", sendMessage);
+
   return app;
 }
