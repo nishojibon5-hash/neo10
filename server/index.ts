@@ -5,11 +5,12 @@ import { handleDemo } from "./routes/demo";
 import { initDb } from "./db";
 import { register, login, me } from "./routes/auth";
 import { getFeed, createPost, reactPost, unreactPost } from "./routes/posts";
-import { getUser, getUserPosts, updateMe, follow, accept } from "./routes/users";
+import { getUser, getUserPosts, updateMe, follow, accept, requests as friendRequests, suggestions as friendSuggestions, friendsList, unfriend } from "./routes/users";
 import { uploadBase64, getAsset } from "./routes/assets";
 import { listStories, createStory } from "./routes/stories";
 import { createAd, listMyAds, getActiveAd, addImpression, patchAd } from "./routes/ads";
 import { ensureConversation, listConversations, listMessages, sendMessage } from "./routes/messages";
+import { listNotifications } from "./routes/notifications";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -57,6 +58,10 @@ export function createServer() {
   app.patch("/api/users/me", updateMe);
   app.post("/api/users/:id/follow", follow);
   app.post("/api/users/:id/accept", accept);
+  app.get("/api/friends/requests", friendRequests);
+  app.get("/api/friends/suggestions", friendSuggestions);
+  app.get("/api/friends/list", friendsList);
+  app.delete("/api/friends/:id", unfriend);
 
   // Assets
   app.post("/api/assets/base64", uploadBase64);
@@ -78,6 +83,9 @@ export function createServer() {
   app.get("/api/messages/conversations", listConversations);
   app.get("/api/messages/:id", listMessages);
   app.post("/api/messages/:id", sendMessage);
+
+  // Notifications
+  app.get("/api/notifications", listNotifications);
 
   return app;
 }

@@ -79,6 +79,14 @@ export const reactPost: RequestHandler = async (req, res) => {
        on conflict (user_id, post_id) do update set type=excluded.type`,
       [payload.sub, postId, type],
     );
+    try {
+      const { rows } = await query(`select user_id from posts where id=$1`, [postId]);
+      const owner = rows?.[0]?.user_id;
+      if (owner && owner !== payload.sub) {
+        const { randomUUID } = await import('crypto');
+        await query(`insert into notifications (id, user_id, type, data) values ($1,$2,'reaction', $3)`, [randomUUID(), owner, JSON.stringify({ post_id: postId, by: payload.sub, type })]);
+      }
+    } catch {}
     res.json({ ok: true });
   } catch (e) {
     if (e instanceof z.ZodError) return res.status(400).json({ error: e.flatten() });

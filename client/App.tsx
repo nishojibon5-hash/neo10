@@ -15,6 +15,8 @@ import Placeholder from "./pages/Placeholder";
 import AdsCreate from "./pages/AdsCreate";
 import AdsDashboard from "./pages/AdsDashboard";
 import Messages from "./pages/Messages";
+import Friends from "./pages/Friends";
+import Notifications from "./pages/Notifications";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import RequireAuth from "./lib/RequireAuth";
@@ -32,10 +34,10 @@ const App = () => (
           <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
           <Route path="/profile/edit" element={<RequireAuth><ProfileEdit /></RequireAuth>} />
           <Route path="/u/:id" element={<UserProfile />} />
-          <Route path="/friends" element={<RequireAuth><Placeholder title="Friends" /></RequireAuth>} />
+          <Route path="/friends" element={<RequireAuth><Friends /></RequireAuth>} />
           <Route path="/videos" element={<RequireAuth><Placeholder title="Videos" /></RequireAuth>} />
           <Route path="/marketplace" element={<RequireAuth><Placeholder title="Marketplace" /></RequireAuth>} />
-          <Route path="/notifications" element={<RequireAuth><Placeholder title="Notifications" /></RequireAuth>} />
+          <Route path="/notifications" element={<RequireAuth><Notifications /></RequireAuth>} />
           <Route path="/messages" element={<RequireAuth><Messages /></RequireAuth>} />
           <Route path="/create" element={<RequireAuth><Placeholder title="Create" /></RequireAuth>} />
           <Route path="/login" element={<Login />} />

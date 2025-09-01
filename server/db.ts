@@ -117,6 +117,13 @@ export async function initDb() {
       attachment_type text check (attachment_type in ('image','video','audio')),
       created_at timestamptz not null default now()
     )`,
+    `create table if not exists notifications (
+      id uuid primary key,
+      user_id uuid not null references users(id) on delete cascade,
+      type text not null,
+      data jsonb,
+      created_at timestamptz not null default now()
+    )`,
   ];
   for (const sql of statements) {
     try { await pool.query(sql); } catch (e) { console.error("DB init step failed", e); }
