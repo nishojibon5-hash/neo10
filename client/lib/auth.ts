@@ -17,6 +17,7 @@ export function clearToken() {
 }
 export function setUser(user: AuthUser) {
   localStorage.setItem(USER_KEY, JSON.stringify(user));
+  try { window.dispatchEvent(new Event("auth:change")); } catch {}
 }
 export function getUser(): AuthUser | null {
   const raw = localStorage.getItem(USER_KEY);
