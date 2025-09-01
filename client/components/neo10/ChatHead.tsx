@@ -12,10 +12,16 @@ export default function ChatHead() {
 
   const load = async () => {
     try {
-      const res = await fetch("/api/messages/conversations", { headers: { Authorization: `Bearer ${getToken()}` } });
-      if (!res.ok) return;
+      const token = getToken();
+      if (!token) return;
+      const res = await fetch("/api/messages/conversations", { headers: { Authorization: `Bearer ${token}` } }).catch(()=>null as any);
+      if (!res || !res.ok) return;
       const d = await res.json();
-      if (d.conversations?.[0]) { setConv(d.conversations[0]); const m = await fetch(`/api/messages/${d.conversations[0].id}`, { headers: { Authorization: `Bearer ${getToken()}` } }); const md = await m.json(); setMsgs(md.messages || []); }
+      if (d.conversations?.[0]) {
+        setConv(d.conversations[0]);
+        const m = await fetch(`/api/messages/${d.conversations[0].id}`, { headers: { Authorization: `Bearer ${token}` } }).catch(()=>null as any);
+        if (m && m.ok) { const md = await m.json(); setMsgs(md.messages || []); }
+      }
     } catch {}
   };
   useEffect(()=>{ load(); }, []);
