@@ -228,13 +228,13 @@ export default function Composer() {
                 <label className="inline-flex items-center gap-1 cursor-pointer px-2 py-1 rounded bg-muted/60">
                   <Upload className="size-3" /> Upload photo
                   <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
-                    const f = e.target.files?.[0]; if (!f) return; const url = await uploadAsset(f); setImage(url); setMediaInput("");
+                    const f = e.target.files?.[0]; if (!f) return; try { const url = await uploadAsset(f); setImage(url); setMediaInput(""); } catch (err:any) { alert(err?.message || 'Upload failed'); }
                   }} />
                 </label>
                 <label className="inline-flex items-center gap-1 cursor-pointer px-2 py-1 rounded bg-muted/60">
                   <Upload className="size-3" /> Upload video
                   <input type="file" accept="video/*" className="hidden" onChange={async (e) => {
-                    const f = e.target.files?.[0]; if (!f) return; const url = await uploadAsset(f); setEmbedHtml(""); setImage(""); setMediaInput(url); setMode('text');
+                    const f = e.target.files?.[0]; if (!f) return; try { const url = await uploadAsset(f); setEmbedHtml(""); setImage(""); setMediaInput(url); setMode('text'); } catch (err:any) { alert(err?.message || 'Upload failed'); }
                   }} />
                 </label>
               </div>
