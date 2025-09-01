@@ -47,7 +47,7 @@ export default function PostCard({ post }: { post: Post }) {
         </button>
       </header>
       {post.mode === "html" ? (
-        <div className="px-3 pb-3 text-sm prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: post.content }} />
+        <div className="px-3 pb-3 text-sm prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }} />
       ) : (
         <div className="px-3 pb-3 text-sm whitespace-pre-wrap">{post.content}</div>
       )}
