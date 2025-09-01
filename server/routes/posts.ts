@@ -29,6 +29,44 @@ export const getFeed: RequestHandler = async (_req, res) => {
   }
 };
 
+export const listComments: RequestHandler = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const { rows } = await query(
+      `select c.id, c.content, c.created_at,
+              u.id as user_id, u.name as user_name, coalesce(u.avatar_url,'') as user_avatar
+         from comments c join users u on u.id=c.user_id
+        where c.post_id=$1 order by c.created_at asc limit 100`,
+      [postId],
+    );
+    res.json({ comments: rows });
+  } catch {
+    res.status(500).json({ error: "Failed to load comments" });
+  }
+};
+
+const addCommentSchema = z.object({ content: z.string().min(1).max(2000) });
+export const addComment: RequestHandler = async (req, res) => {
+  try {
+    const JWT_SECRET = process.env.JWT_SECRET;
+    const auth = req.headers.authorization || "";
+    const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+    if (!token || !JWT_SECRET) return res.status(401).json({ error: "Unauthorized" });
+    const payload = jwt.verify(token, JWT_SECRET) as { sub: string };
+
+    const { content } = addCommentSchema.parse(req.body);
+    const id = randomUUID();
+    await query(
+      `insert into comments (id, user_id, post_id, content) values ($1,$2,$3,$4)`,
+      [id, payload.sub, req.params.id, content],
+    );
+    res.json({ id });
+  } catch (e) {
+    if (e instanceof z.ZodError) return res.status(400).json({ error: e.flatten() });
+    res.status(500).json({ error: "Failed to comment" });
+  }
+};
+
 const createSchema = z.object({
   content: z.string().optional(),
   content_mode: z.enum(["text","html"]).default("text"),
