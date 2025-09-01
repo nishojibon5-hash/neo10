@@ -85,7 +85,7 @@ export default function Header() {
                   <MoreHorizontal className="size-5" />
                 </button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-80">
+              <SheetContent side="right" className="w-80 h-full p-0">
                 <MenuContent onNavigate={(to) => navigate(to)} />
               </SheetContent>
             </Sheet>
@@ -110,7 +110,7 @@ export default function Header() {
                   <MoreHorizontal className="size-5" />
                 </button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-80">
+              <SheetContent side="right" className="w-80 h-full p-0">
                 <MenuContent onNavigate={(to) => navigate(to)} />
               </SheetContent>
             </Sheet>
