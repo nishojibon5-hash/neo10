@@ -11,6 +11,7 @@ import { listStories, createStory } from "./routes/stories";
 import { createAd, listMyAds, getActiveAd, addImpression, patchAd } from "./routes/ads";
 import { ensureConversation, listConversations, listMessages, sendMessage } from "./routes/messages";
 import { listNotifications } from "./routes/notifications";
+import { resolveUrl } from "./routes/resolve";
 import dotenv from "dotenv";
 
 dotenv.config();
