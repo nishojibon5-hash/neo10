@@ -90,5 +90,8 @@ export function createServer() {
   // Notifications
   app.get("/api/notifications", listNotifications);
 
+  // Utils
+  app.get("/api/resolve", resolveUrl);
+
   return app;
 }
