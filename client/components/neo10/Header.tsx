@@ -16,13 +16,15 @@ function MenuContent({ onNavigate }: { onNavigate: (to: string) => void }) {
       <nav className="flex-1 py-2">
         <button onClick={() => onNavigate('/profile')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Profile</button>
         <button onClick={() => onNavigate('/friends')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Friends</button>
+        <button onClick={() => onNavigate('/messages')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Messenger</button>
+        <button onClick={() => onNavigate('/notifications')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Notifications</button>
         <button onClick={() => onNavigate('/videos')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Videos</button>
         <button onClick={() => onNavigate('/marketplace')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Marketplace</button>
         <button onClick={() => onNavigate('/ads/create')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Create Ads</button>
         <button onClick={() => onNavigate('/ads/dashboard')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Ads Dashboard</button>
         <button onClick={() => onNavigate('/settings')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Settings</button>
       </nav>
-      <div className="border-t py-2">
+      <div className="mt-auto border-t py-2">
         <button onClick={() => { clearToken(); onNavigate('/login'); }} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Log out</button>
       </div>
     </div>
