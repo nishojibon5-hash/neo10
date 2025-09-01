@@ -65,6 +65,7 @@ export default function Profile() {
           </div>
           <div className="flex gap-2">
             <Button variant="secondary">Add to story</Button>
+            <Link to="/messages"><Button variant="outline">Message</Button></Link>
             <Link to="/profile/edit"><Button>Edit profile</Button></Link>
           </div>
         </div>
