@@ -93,6 +93,7 @@ export function createServer() {
 
   // Utils
   app.get("/api/resolve", resolveUrl);
+  app.get("/api/proxy", mediaProxy);
 
   return app;
 }
