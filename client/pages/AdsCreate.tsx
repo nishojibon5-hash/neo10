@@ -37,15 +37,39 @@ export default function AdsCreate() {
   };
 
   const onSubmit = async (values: Form) => {
-    setSubmitting(true);
-    const res = await fetch("/api/ads", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
-      body: JSON.stringify(values),
-    });
-    const data = await res.json();
-    setSubmitting(false);
-    if (res.ok) alert("Ad created. Status: " + data.status); else alert(data.error || "Failed");
+    try {
+      setSubmitting(true);
+      const clean = (v: any) => (v === undefined || v === null || String(v).trim() === "" ? undefined : v);
+      const toIso = (s?: string) => (s && String(s).trim() ? new Date(s).toISOString() : undefined);
+      const body: any = {
+        title: values.title,
+        destination_url: clean(values.destination_url),
+        media_url: clean(values.media_url),
+        media_type: clean(values.media_type),
+        locations: clean(values.locations),
+        audience: clean(values.audience),
+        budget: typeof values.budget === 'number' && isFinite(values.budget) ? values.budget : undefined,
+        start_at: toIso(values.start_at),
+        end_at: toIso(values.end_at),
+        trial: Boolean(values.trial),
+        payment_method: values.trial ? undefined : clean(values.payment_method),
+        transaction_id: values.trial ? undefined : clean(values.transaction_id),
+      };
+      const res = await fetch("/api/ads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.status === 401) { alert("Please login"); window.location.href = "/login"; return; }
+      if (res.ok) {
+        alert("Ad created. Status: " + data.status);
+      } else {
+        alert(data.error ? JSON.stringify(data.error) : "Failed");
+      }
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
