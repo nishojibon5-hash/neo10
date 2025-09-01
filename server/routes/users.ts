@@ -71,6 +71,10 @@ export const follow: RequestHandler = async (req, res) => {
        on conflict (user_id, friend_id) do update set status='pending'`,
       [sub, target],
     );
+    try {
+      const { randomUUID } = await import('crypto');
+      await query(`insert into notifications (id, user_id, type, data) values ($1,$2,'friend_request',$3)`, [randomUUID(), target, JSON.stringify({ from: sub })]);
+    } catch {}
     res.json({ ok: true });
   } catch {
     res.status(500).json({ error: "Failed to follow" });
