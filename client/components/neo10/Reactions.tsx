@@ -59,7 +59,7 @@ export function ReactionButton({ postId, initialCount = 0, initialReaction }: { 
         onTouchStart={onPressStart}
         onTouchEnd={onPressEnd}
       >
-        Like {count ? `(${count})` : ""}
+        {selected || "Like"} {count ? `(${count})` : ""}
       </button>
       {open && (
         <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 z-20">
