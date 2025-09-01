@@ -11,13 +11,27 @@ export default function ProfileEdit() {
   const { register, handleSubmit, setValue, watch } = useForm<Form>();
 
   const onSubmit = async (values: Form) => {
-    const res = await fetch("/api/users/me", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
-      body: JSON.stringify(values),
-    });
-    const data = await res.json();
-    if (res.ok) { setUser(data.user); alert("Saved"); } else alert(data.error || "Failed");
+    try {
+      const body: Partial<Form> = {};
+      (['name','username','avatar_url','cover_url','bio'] as (keyof Form)[]).forEach((k) => {
+        const v = values[k];
+        if (typeof v === 'string') {
+          const t = v.trim();
+          if (t) (body as any)[k] = t;
+        }
+      });
+      const token = getToken();
+      const res = await fetch("/api/users/me", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.status === 401) { alert("Please login"); window.location.href = "/login"; return; }
+      if (res.ok) { setUser((data as any).user); alert("Save success"); } else alert((data as any).error || "Failed");
+    } catch (e: any) {
+      alert(e?.message || "Failed");
+    }
   };
 
   const avatar = watch("avatar_url");
