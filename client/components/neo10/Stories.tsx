@@ -11,7 +11,8 @@ export default function Stories() {
 
   const load = async () => {
     try {
-      const res = await fetch("/api/stories");
+      const res = await fetch("/api/stories").catch(()=>null as any);
+      if (!res || !res.ok) return;
       const data = await res.json();
       const mapped: Story[] = (data.stories || []).map((s: any) => ({ id: s.id, name: s.name || "Story", avatar: s.avatar_url || undefined, image_url: s.image_url || undefined, video_url: s.video_url || undefined }));
       setStories(mapped);
