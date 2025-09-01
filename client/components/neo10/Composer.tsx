@@ -53,8 +53,11 @@ function parseMediaInput(input: string): { imageUrl?: string; html?: string } {
     return { html: buildYouTubeEmbed(candidate) };
   }
   if (/facebook\.com|fb\.watch/i.test(candidate)) {
-    // For FB, require full video URL (or extracted src)
-    return { html: buildFacebookEmbed(candidate) };
+    // Only embed FB when it's clearly a video link
+    if (/video|videos|watch|plugins\/video\.php/i.test(candidate)) {
+      return { html: buildFacebookEmbed(candidate) };
+    }
+    // otherwise let resolver handle below
   }
   if (isImageUrl(candidate)) {
     return { imageUrl: candidate };
@@ -262,7 +265,7 @@ export default function Composer() {
             ) : (
               <div className="whitespace-pre-wrap">{content}</div>
             )}
-            {image ? <img src={image} alt="preview" className="mt-2 max-h-64 w-full rounded-md object-cover" /> : null}
+            {image ? <img src={image} alt="preview" className="mt-2 rounded-md max-w-full h-auto" /> : null}
           </div>
 
           <div className="rounded-md border p-3">
