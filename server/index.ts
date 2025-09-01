@@ -12,6 +12,7 @@ import { createAd, listMyAds, getActiveAd, addImpression, patchAd } from "./rout
 import { ensureConversation, listConversations, listMessages, sendMessage } from "./routes/messages";
 import { listNotifications } from "./routes/notifications";
 import { resolveUrl } from "./routes/resolve";
+import { mediaProxy } from "./routes/proxy";
 import dotenv from "dotenv";
 
 dotenv.config();
