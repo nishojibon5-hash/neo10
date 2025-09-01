@@ -12,10 +12,17 @@ export default function Friends() {
   const [friends, setFriends] = useState<UserMini[]>([]);
 
   const load = async () => {
-    const h = { Authorization: `Bearer ${getToken()}` } as any;
-    const rq = await fetch("/api/friends/requests", { headers: h }); if (rq.ok) setRequests((await rq.json()).requests || []);
-    const sg = await fetch("/api/friends/suggestions", { headers: h }); if (sg.ok) setSuggestions((await sg.json()).users || []);
-    const fr = await fetch("/api/friends/list", { headers: h }); if (fr.ok) setFriends((await fr.json()).friends || []);
+    try {
+      const h = { Authorization: `Bearer ${getToken()}` } as any;
+      const [rq, sg, fr] = await Promise.all([
+        fetch("/api/friends/requests", { headers: h }).catch(()=>null),
+        fetch("/api/friends/suggestions", { headers: h }).catch(()=>null),
+        fetch("/api/friends/list", { headers: h }).catch(()=>null),
+      ]);
+      if (rq && rq.ok) setRequests((await rq.json()).requests || []);
+      if (sg && sg.ok) setSuggestions((await sg.json()).users || []);
+      if (fr && fr.ok) setFriends((await fr.json()).friends || []);
+    } catch {}
   };
   useEffect(()=>{ load(); }, []);
 
