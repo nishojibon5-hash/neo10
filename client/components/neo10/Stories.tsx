@@ -23,10 +23,15 @@ export default function Stories() {
   const pick = () => fileRef.current?.click();
   const onPick = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0]; if (!f) return;
-    const url = await uploadAsset(f);
-    const body: any = f.type.startsWith("video") ? { video_url: url } : { image_url: url };
-    await fetch("/api/stories", { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` }, body: JSON.stringify(body) });
-    await load();
+    try {
+      const url = await uploadAsset(f);
+      const body: any = f.type.startsWith("video") ? { video_url: url } : { image_url: url };
+      const res = await fetch("/api/stories", { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` }, body: JSON.stringify(body) });
+      if (!res.ok) { const d = await res.json().catch(()=>({})); throw new Error(d.error || 'Share failed'); }
+      await load();
+    } catch (err:any) {
+      alert(err?.message || 'Upload failed');
+    }
   };
 
   return (
