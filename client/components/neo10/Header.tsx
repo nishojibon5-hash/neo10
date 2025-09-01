@@ -23,10 +23,9 @@ function MenuContent({ onNavigate }: { onNavigate: (to: string) => void }) {
         <button onClick={() => onNavigate('/ads/create')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Create Ads</button>
         <button onClick={() => onNavigate('/ads/dashboard')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Ads Dashboard</button>
         <button onClick={() => onNavigate('/settings')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Settings</button>
+        <div className="border-t my-2" />
+        <button onClick={() => { clearToken(); onNavigate('/login'); }} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md text-red-600">Log out</button>
       </nav>
-      <div className="mt-auto border-t py-2">
-        <button onClick={() => { clearToken(); onNavigate('/login'); }} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Log out</button>
-      </div>
     </div>
   );
 }
