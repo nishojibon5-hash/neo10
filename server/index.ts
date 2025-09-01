@@ -51,6 +51,8 @@ export function createServer() {
   app.post("/api/posts", createPost);
   app.post("/api/posts/:id/react", reactPost);
   app.delete("/api/posts/:id/react", unreactPost);
+  app.get("/api/posts/:id/comments", (await import('./routes/posts')).listComments);
+  app.post("/api/posts/:id/comments", (await import('./routes/posts')).addComment);
 
   // Users
   app.get("/api/users/:id", getUser);
