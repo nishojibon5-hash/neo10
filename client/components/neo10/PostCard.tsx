@@ -73,8 +73,9 @@ export default function PostCard({ post }: { post: Post }) {
                   try {
                     const res = await fetch(`/api/posts/${post.id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${getToken()}` } });
                     if (res.ok) {
-                      (document.getElementById(`post-${post.id}`) as HTMLElement)?.remove();
+                      setDeleted(true);
                       window.dispatchEvent(new Event('feed:refresh'));
+                      window.dispatchEvent(new CustomEvent('post:deleted', { detail: { id: post.id } } as any));
                     }
                   } catch {}
                 }}>
