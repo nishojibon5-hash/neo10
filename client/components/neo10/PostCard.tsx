@@ -29,12 +29,8 @@ function sanitizeHtml(html: string) {
     if (/^http:\/\//i.test(normalized)) return `/api/proxy?url=${encodeURIComponent(normalized)}`;
     return normalized;
   };
-  // Replace src="..." and poster="..." within img/video/source tags
-  return html.replace(/(\s(?:src|poster)\s*=\s*")[^"]*(")/gi, (_m, p1, p2) => {
-    const urlMatch = _m.match(/\"([^\"]*)\"/);
-    const url = urlMatch ? urlMatch[1] : "";
-    return `${p1}${fix(url)}${p2}`;
-  });
+  // Replace src/poster URLs and proxy insecure ones
+  return html.replace(/(\s(?:src|poster)\s*=\s*")([^"]*)(")/gi, (_m, p1, url, p3) => `${p1}${fix(url)}${p3}`);
 }
 
 export default function PostCard({ post }: { post: Post }) {
