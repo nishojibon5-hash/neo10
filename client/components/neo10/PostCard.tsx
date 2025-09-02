@@ -57,9 +57,31 @@ export default function PostCard({ post }: { post: Post }) {
             <p className="text-xs text-muted-foreground">{post.createdAt}</p>
           </div>
         </div>
-        <button className="rounded-full p-2 hover:bg-muted/60">
-          <MoreHorizontal className="size-5 text-muted-foreground" />
-        </button>
+        <div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="rounded-full p-2 hover:bg-muted/60">
+                <MoreHorizontal className="size-5 text-muted-foreground" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {post.author.id && getUser()?.id === post.author.id ? (
+                <DropdownMenuItem className="text-red-600" onClick={async () => {
+                  if (!confirm("Delete this post?")) return;
+                  try {
+                    const res = await fetch(`/api/posts/${post.id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${getToken()}` } });
+                    if (res.ok) {
+                      (document.getElementById(`post-${post.id}`) as HTMLElement)?.remove();
+                      window.dispatchEvent(new Event('feed:refresh'));
+                    }
+                  } catch {}
+                }}>
+                  <Trash2 className="size-4 mr-2" /> Delete
+                </DropdownMenuItem>
+              ) : null}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </header>
       {post.mode === "html" ? (
         <div className="px-3 pb-3 text-sm prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }} />
