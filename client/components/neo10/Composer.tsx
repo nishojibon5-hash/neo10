@@ -104,6 +104,7 @@ export default function Composer() {
 
   const handleNext = async () => {
     let parsed = parseMediaInput(mediaInput);
+    // If it's an absolute HTTP(S) link, try resolving content-type
     if (!parsed.imageUrl && !parsed.html && /^https?:\/\//i.test(mediaInput.trim())) {
       try {
         const r = await fetch(`/api/resolve?url=${encodeURIComponent(mediaInput.trim())}`);
@@ -113,6 +114,10 @@ export default function Composer() {
           else if (d.kind === 'video') parsed = { html: `<video src="${d.url}" class="w-full rounded-lg" controls playsinline />` };
         }
       } catch {}
+    }
+    // If it's a local uploaded video (/api/assets/...) or direct .mp4, show video preview
+    if (!parsed.imageUrl && !parsed.html && isVideoUrl(mediaInput.trim())) {
+      parsed = { html: `<video src="${mediaInput.trim()}" class="w-full rounded-lg" controls playsinline />` };
     }
     if (parsed.imageUrl) setImage(parsed.imageUrl);
     if (parsed.html) setEmbedHtml(parsed.html);
@@ -128,6 +133,10 @@ export default function Composer() {
       let finalMode: "text" | "html" = mode;
       let imageUrl: string | undefined = image || undefined;
       let videoUrl: string | undefined = undefined;
+      // If user uploaded/entered a direct video link (e.g., /api/assets/.. or .mp4), publish via video_url
+      if (!embedHtml && isVideoUrl(mediaInput.trim())) {
+        videoUrl = mediaInput.trim();
+      }
 
       if (embedHtml) {
         finalMode = "html";
