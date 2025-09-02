@@ -70,8 +70,8 @@ export const addComment: RequestHandler = async (req, res) => {
 const createSchema = z.object({
   content: z.string().optional(),
   content_mode: z.enum(["text","html"]).default("text"),
-  image_url: z.string().url().optional(),
-  video_url: z.string().url().optional(),
+  image_url: z.string().min(1).optional(),
+  video_url: z.string().min(1).optional(),
   type: z.enum(["post","video","reel"]).default("post"),
   monetized: z.boolean().default(false),
 });
