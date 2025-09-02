@@ -36,6 +36,11 @@ function isImageUrl(s: string) {
   return /\.(png|jpe?g|gif|webp|avif)(\?.*)?$/i.test(s.trim());
 }
 
+function isVideoUrl(s: string) {
+  const v = s.trim();
+  return /\.(mp4|webm|ogg)(\?.*)?$/i.test(v) || v.startsWith('/api/assets/');
+}
+
 function extractIframeSrc(html: string) {
   const m = html.match(/<iframe[^>]+src=["']([^"']+)["']/i);
   return m ? m[1] : null;
@@ -234,6 +239,11 @@ export default function Composer() {
               placeholder="Paste image URL or YouTube/Facebook link or iframe embed code"
               className="min-h-20 w-full rounded-md bg-muted/60 p-2 text-sm"
             />
+
+            {image ? <img src={image} alt="preview" className="mt-2 rounded-md max-w-full h-auto" /> : null}
+            {!image && isVideoUrl(mediaInput) ? (
+              <video src={mediaInput.trim()} className="mt-2 w-full rounded-md" controls />
+            ) : null}
 
             <div className="flex items-center justify-between pt-1">
               <div className="flex items-center gap-2 text-xs">
