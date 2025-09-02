@@ -82,8 +82,8 @@ export default function Composer() {
   const [monetized, setMonetized] = useState(false);
 
   const canProceed = useMemo(() => {
-    return (content && content.trim().length > 0) || !!mediaInput.trim();
-  }, [content, mediaInput]);
+    return (content && content.trim().length > 0) || !!mediaInput.trim() || !!image;
+  }, [content, mediaInput, image]);
 
   const reset = () => {
     setExpanded(false);
