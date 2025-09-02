@@ -53,6 +53,7 @@ export function createServer() {
   app.post("/api/posts", createPost);
   app.post("/api/posts/:id/react", reactPost);
   app.delete("/api/posts/:id/react", unreactPost);
+  app.delete("/api/posts/:id", deletePost);
   app.get("/api/posts/:id/comments", listComments);
   app.post("/api/posts/:id/comments", addComment);
 
