@@ -4,7 +4,7 @@ import cors from "cors";
 import { handleDemo } from "./routes/demo";
 import { initDb } from "./db";
 import { register, login, me } from "./routes/auth";
-import { getFeed, createPost, reactPost, unreactPost, listComments, addComment } from "./routes/posts";
+import { getFeed, createPost, reactPost, unreactPost, listComments, addComment, deletePost } from "./routes/posts";
 import { getUser, getUserPosts, updateMe, follow, accept, requests as friendRequests, suggestions as friendSuggestions, friendsList, unfriend } from "./routes/users";
 import { uploadBase64, getAsset } from "./routes/assets";
 import { listStories, createStory } from "./routes/stories";
