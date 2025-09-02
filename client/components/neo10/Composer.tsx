@@ -114,8 +114,8 @@ export default function Composer() {
         }
       } catch {}
     }
-    setImage(parsed.imageUrl || "");
-    setEmbedHtml(parsed.html || "");
+    if (parsed.imageUrl) setImage(parsed.imageUrl);
+    if (parsed.html) setEmbedHtml(parsed.html);
     if (parsed.html && mode !== "html") setMode("html");
     setStep(2);
   };
