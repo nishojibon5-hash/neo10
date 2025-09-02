@@ -10,15 +10,20 @@ export default function AdInline() {
     let mounted = true;
     const load = async () => {
       try {
-        const res = await fetch("/api/ads/active");
-        const data = await res.json();
+        const res = await fetch("/api/ads/active").catch(() => null as any);
+        if (!res || !res.ok) { if (mounted) setAd(null); return; }
+        const data = await res.json().catch(() => ({ ad: null }));
         if (mounted) {
           setAd(data.ad || null);
           if (data.ad?.id) {
-            fetch(`/api/ads/${data.ad.id}/impression`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ placement: "post_inline" }) }).catch(()=>{});
+            fetch(`/api/ads/${data.ad.id}/impression`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ placement: "post_inline" }),
+            }).catch(() => {});
           }
         }
-      } catch {}
+      } catch { if (mounted) setAd(null); }
     };
     load();
     return () => { mounted = false; };
