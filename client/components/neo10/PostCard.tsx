@@ -21,15 +21,20 @@ export interface Post {
 }
 
 function sanitizeHtml(html: string) {
-  const replaceSrc = (match: string, p1: string, url: string) => {
-    const fixed = url.startsWith("//") ? `https:${url}` : url;
-    if (/^https:\/\//i.test(fixed)) return `${p1}"${fixed}"`;
-    if (/^http:\/\//i.test(fixed)) return `${p1}"/api/proxy?url=${encodeURIComponent(fixed)}"`;
-    return match;
+  const fix = (url?: string) => {
+    const raw = String(url || "");
+    if (!raw) return raw;
+    const normalized = raw.startsWith("//") ? `https:${raw}` : raw;
+    if (/^https:\/\//i.test(normalized)) return normalized;
+    if (/^http:\/\//i.test(normalized)) return `/api/proxy?url=${encodeURIComponent(normalized)}`;
+    return normalized;
   };
-  return html
-    .replace(/(src=\")[^\"]+(\")/gi, (m) => m.replace(/src=\"([^\"]+)\"/i, (mm, u) => replaceSrc('src="', u)))
-    .replace(/(poster=\")[^\"]+(\")/gi, (m) => m.replace(/poster=\"([^\"]+)\"/i, (mm, u) => replaceSrc('poster="', u)));
+  // Replace src="..." and poster="..." within img/video/source tags
+  return html.replace(/(\s(?:src|poster)\s*=\s*")[^"]*(")/gi, (_m, p1, p2) => {
+    const urlMatch = _m.match(/\"([^\"]*)\"/);
+    const url = urlMatch ? urlMatch[1] : "";
+    return `${p1}${fix(url)}${p2}`;
+  });
 }
 
 export default function PostCard({ post }: { post: Post }) {
