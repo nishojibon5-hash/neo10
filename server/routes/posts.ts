@@ -147,3 +147,19 @@ export const unreactPost: RequestHandler = async (req, res) => {
     res.status(500).json({ error: "Failed to remove reaction" });
   }
 };
+
+export const deletePost: RequestHandler = async (req, res) => {
+  try {
+    const JWT_SECRET = process.env.JWT_SECRET;
+    const auth = req.headers.authorization || "";
+    const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+    if (!token || !JWT_SECRET) return res.status(401).json({ error: "Unauthorized" });
+    const payload = jwt.verify(token, JWT_SECRET) as { sub: string };
+    const postId = req.params.id;
+    const r = await query(`delete from posts where id=$1 and user_id=$2`, [postId, payload.sub]);
+    if (r.rowCount === 0) return res.status(404).json({ error: "Not found" });
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: "Failed to delete" });
+  }
+};
