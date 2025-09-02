@@ -1,10 +1,12 @@
-import { MessageCircle, Share2, MoreHorizontal } from "lucide-react";
+import { MessageCircle, Share2, MoreHorizontal, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ReactionButton } from "./Reactions";
 import AdInline from "./AdInline";
 import { Link } from "react-router-dom";
 import Comments from "./Comments";
 import { useState } from "react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { getToken, getUser } from "@/lib/auth";
 
 export interface Post {
   id: string;
