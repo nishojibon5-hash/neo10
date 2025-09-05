@@ -69,6 +69,9 @@ export default function Header() {
           </div>
 
           <div className="ml-auto hidden md:flex items-center gap-2">
+            <button onClick={() => navigate("/marketplace")} className="grid place-items-center h-9 w-9 rounded-full bg-muted/60">
+              <ShoppingBag className="size-5" />
+            </button>
             <button onClick={() => navigate("/create")} className="grid place-items-center h-9 w-9 rounded-full bg-muted/60">
               <Plus className="size-5" />
             </button>
