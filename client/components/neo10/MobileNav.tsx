@@ -16,8 +16,9 @@ function IconItem({ to, children, badge }: { to: string; children: React.ReactNo
 
 export default function MobileNav() {
   return (
-    <div className="md:hidden grid grid-cols-6 text-gray-700">
+    <div className="md:hidden grid grid-cols-7 text-gray-700">
       <IconItem to="/"><Home className="size-6" /></IconItem>
+      <IconItem to="/marketplace"><ShoppingBag className="size-6" /></IconItem>
       <IconItem to="/friends"><Users className="size-6" /></IconItem>
       <IconItem to="/messages" badge=""><MessageCircle className="size-6" /></IconItem>
       <IconItem to="/videos" badge="8"><Video className="size-6" /></IconItem>
