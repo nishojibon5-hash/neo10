@@ -25,6 +25,7 @@ function ListingCard({ item }: { item: any }) {
 
 export default function Marketplace() {
   const [params, setParams] = useSearchParams();
+  const qc = useQueryClient();
   const q = params.get("q") || "";
   const category = params.get("category") || "";
 
