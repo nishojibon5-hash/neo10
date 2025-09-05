@@ -53,7 +53,10 @@ export default function Marketplace() {
       <div className="mx-auto max-w-5xl">
         <div className="flex items-center justify-between gap-2 mb-4">
           <h1 className="text-2xl font-bold">Marketplace</h1>
-          <Link to="/marketplace/create"><Button>Sell</Button></Link>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={async () => { const r = await fetch('/api/market/seed-demo', { method: 'POST' }); if (r.ok) { toast.success('Demo listings added'); qc.invalidateQueries({ queryKey: ['market-listings'] }); } else { toast.error('Failed to seed'); } }}>Load demo</Button>
+            <Link to="/marketplace/create"><Button>Sell</Button></Link>
+          </div>
         </div>
         <div className="flex items-center gap-2 mb-4">
           <Input
