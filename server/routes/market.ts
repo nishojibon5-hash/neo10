@@ -3,6 +3,7 @@ import type { RequestHandler } from "express";
 import { z } from "zod";
 import { query } from "../db";
 import { randomUUID } from "crypto";
+import bcrypt from "bcryptjs";
 
 const createSchema = z.object({
   title: z.string().min(2),
@@ -99,4 +100,108 @@ export const listCategories: RequestHandler = async (_req, res) => {
     "Hobbies & Sports",
   ];
   res.json({ categories: cats });
+};
+
+export const seedDemo: RequestHandler = async (_req, res) => {
+  try {
+    const password_hash = await bcrypt.hash("demo1234", 8);
+    const sellers = [
+      { name: "Rahim Electronics", avatar: "https://i.pravatar.cc/100?img=5" },
+      { name: "Karim Motors", avatar: "https://i.pravatar.cc/100?img=12" },
+      { name: "Nabila Mobile Shop", avatar: "https://i.pravatar.cc/100?img=32" },
+      { name: "City Property", avatar: "https://i.pravatar.cc/100?img=41" },
+      { name: "Daily Bazaar", avatar: "https://i.pravatar.cc/100?img=54" },
+    ];
+
+    const sellerIds: string[] = [];
+    for (const s of sellers) {
+      const id = randomUUID();
+      sellerIds.push(id);
+      await query(
+        `insert into users (id, name, password_hash, avatar_url) values ($1,$2,$3,$4)
+         on conflict (id) do nothing`,
+        [id, s.name, password_hash, s.avatar]
+      ).catch(() => {});
+    }
+
+    const items = [
+      {
+        title: "iPhone 12 Pro 128GB (Factory Unlocked)",
+        description: "Condition 9/10, full fresh, original box and charger included.",
+        price: 58500,
+        image_url: "https://images.unsplash.com/photo-1603898037225-1c9169a59f87?q=80&w=1200&auto=format&fit=crop",
+        location: "Dhaka",
+        category: "Mobiles",
+      },
+      {
+        title: "Samsung 55\"\" 4K Smart TV (2022)",
+        description: "Crystal UHD, warranty 6 months.",
+        price: 45000,
+        image_url: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1200&auto=format&fit=crop",
+        location: "Chattogram",
+        category: "Electronics",
+      },
+      {
+        title: "Honda CB Hornet 160R",
+        description: "Single owner, tax token updated, mileage 35+.",
+        price: 165000,
+        image_url: "https://images.unsplash.com/photo-1620503374956-c9420e9107a9?q=80&w=1200&auto=format&fit=crop",
+        location: "Sylhet",
+        category: "Vehicles",
+      },
+      {
+        title: "2 Bed Apartment for Rent - Bashundhara",
+        description: "2 bed, 2 bath, 900 sqft, 3rd floor, lift + generator.",
+        price: 28000,
+        image_url: "https://images.unsplash.com/photo-1515263487990-61b07816b324?q=80&w=1200&auto=format&fit=crop",
+        location: "Dhaka",
+        category: "Property",
+      },
+      {
+        title: "Office Chair (Ergonomic)",
+        description: "Mesh back, adjustable, almost new.",
+        price: 5500,
+        image_url: "https://images.unsplash.com/photo-1582582621959-48d89b8e3b3d?q=80&w=1200&auto=format&fit=crop",
+        location: "Khulna",
+        category: "Home & Living",
+      },
+      {
+        title: "Ladies Saree (Silk) - Brand New",
+        description: "Imported fabric, premium quality.",
+        price: 3200,
+        image_url: "https://images.unsplash.com/photo-1542060748-10c28b62716f?q=80&w=1200&auto=format&fit=crop",
+        location: "Rajshahi",
+        category: "Fashion",
+      },
+      {
+        title: "Graphics Design Services",
+        description: "Logo, flyer, social media kit. Fast delivery.",
+        price: 1500,
+        image_url: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1200&auto=format&fit=crop",
+        location: "Remote",
+        category: "Services",
+      },
+      {
+        title: "German Shepherd Puppy",
+        description: "Pure breed, vaccinated.",
+        price: 18000,
+        image_url: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?q=80&w=1200&auto=format&fit=crop",
+        location: "Dhaka",
+        category: "Pets",
+      },
+    ];
+
+    for (const it of items) {
+      const owner = sellerIds[Math.floor(Math.random() * sellerIds.length)];
+      await query(
+        `insert into market_listings (id, user_id, title, description, price, image_url, location, category)
+         values ($1,$2,$3,$4,$5,$6,$7,$8)`,
+        [randomUUID(), owner, it.title, it.description, it.price ?? null, it.image_url ?? null, it.location ?? null, it.category ?? null]
+      ).catch(() => {});
+    }
+
+    res.json({ ok: true, created: items.length });
+  } catch (e) {
+    res.status(500).json({ error: "Seed failed" });
+  }
 };
