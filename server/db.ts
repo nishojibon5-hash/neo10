@@ -100,6 +100,18 @@ export async function initDb() {
       placement text,
       created_at timestamptz not null default now()
     )`,
+    `create table if not exists market_listings (
+      id uuid primary key,
+      user_id uuid not null references users(id) on delete cascade,
+      title text not null,
+      description text,
+      price numeric,
+      image_url text,
+      location text,
+      category text,
+      contact_phone text,
+      created_at timestamptz not null default now()
+    )`,
     `create table if not exists conversations (
       id uuid primary key,
       user_a uuid not null references users(id) on delete cascade,
