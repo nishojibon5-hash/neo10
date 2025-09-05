@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import type { RequestHandler } from "express";
 import { z } from "zod";
 import { query } from "../db";
 import { randomUUID } from "crypto";
