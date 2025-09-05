@@ -12,6 +12,8 @@ import Profile from "./pages/Profile";
 import ProfileEdit from "./pages/ProfileEdit";
 import UserProfile from "./pages/UserProfile";
 import Placeholder from "./pages/Placeholder";
+import Marketplace from "./pages/Marketplace";
+import MarketplaceCreate from "./pages/MarketplaceCreate";
 import AdsCreate from "./pages/AdsCreate";
 import AdsDashboard from "./pages/AdsDashboard";
 import Messages from "./pages/Messages";
