@@ -40,10 +40,10 @@ export default function Marketplace() {
   const { data } = useQuery({
     queryKey: ["market-listings", q, category],
     queryFn: async () => {
-      const url = new URL(window.location.origin + "/api/market/listings");
-      if (q) url.searchParams.set("q", q);
-      if (category) url.searchParams.set("category", category);
-      const res = await fetch(url.toString());
+      const sp = new URLSearchParams();
+      if (q) sp.set("q", q);
+      if (category) sp.set("category", category);
+      const res = await fetch(`/api/market/listings${sp.toString() ? `?${sp.toString()}` : ""}`);
       return await res.json();
     },
   });
