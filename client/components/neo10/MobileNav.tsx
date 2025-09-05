@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Home, Users, MessageCircle, Video, Bell, User } from "lucide-react";
+import { Home, Users, MessageCircle, Video, Bell, User, ShoppingBag } from "lucide-react";
 
 function IconItem({ to, children, badge }: { to: string; children: React.ReactNode; badge?: string }) {
   return (
