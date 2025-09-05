@@ -9,7 +9,7 @@ import { getUser, getUserPosts, updateMe, follow, accept, requests as friendRequ
 import { uploadBase64, getAsset } from "./routes/assets";
 import { listStories, createStory } from "./routes/stories";
 import { createAd, listMyAds, getActiveAd, addImpression, patchAd } from "./routes/ads";
-import { listListings, createListing, deleteListing, listCategories, getListing } from "./routes/market";
+import { listListings, createListing, deleteListing, listCategories, getListing, seedDemo } from "./routes/market";
 import { ensureConversation, listConversations, listMessages, sendMessage } from "./routes/messages";
 import { listNotifications } from "./routes/notifications";
 import { resolveUrl } from "./routes/resolve";
@@ -90,7 +90,7 @@ export function createServer() {
   app.post("/api/market/listings", createListing);
   app.delete("/api/market/listings/:id", deleteListing);
   app.get("/api/market/categories", listCategories);
-  app.post("/api/market/seed-demo", (await import("./routes/market")).seedDemo as any);
+  app.post("/api/market/seed-demo", seedDemo as any);
 
   // Messaging
   app.post("/api/messages/ensure/:userId", ensureConversation);
