@@ -90,6 +90,7 @@ export function createServer() {
   app.post("/api/market/listings", createListing);
   app.delete("/api/market/listings/:id", deleteListing);
   app.get("/api/market/categories", listCategories);
+  app.post("/api/market/seed-demo", (await import("./routes/market")).seedDemo as any);
 
   // Messaging
   app.post("/api/messages/ensure/:userId", ensureConversation);
