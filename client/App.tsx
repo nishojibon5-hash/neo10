@@ -38,7 +38,7 @@ const App = () => (
           <Route path="/u/:id" element={<UserProfile />} />
           <Route path="/friends" element={<RequireAuth><Friends /></RequireAuth>} />
           <Route path="/videos" element={<RequireAuth><Placeholder title="Videos" /></RequireAuth>} />
-          <Route path="/marketplace" element={<RequireAuth><Marketplace /></RequireAuth>} />
+          <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/notifications" element={<RequireAuth><Notifications /></RequireAuth>} />
           <Route path="/messages" element={<RequireAuth><Messages /></RequireAuth>} />
           <Route path="/create" element={<RequireAuth><Placeholder title="Create" /></RequireAuth>} />
@@ -50,6 +50,7 @@ const App = () => (
           <Route path="/admin" element={<RequireAuth><Placeholder title="Admin Panel" /></RequireAuth>} />
           <Route path="/settings" element={<RequireAuth><Placeholder title="Settings" /></RequireAuth>} />
           <Route path="/ads/dashboard" element={<RequireAuth><AdsDashboard /></RequireAuth>} />
+          <Route path="/marketplace/item/:id" element={<MarketplaceItem />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
