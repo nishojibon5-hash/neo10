@@ -2,7 +2,7 @@ import { Image, Video, Smile, Type, Upload } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback, memo } from "react";
 import { uploadAsset } from "@/lib/upload";
 import { getUser } from "@/lib/auth";
 
