@@ -45,8 +45,11 @@ export default function Index() {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch("/api/feed");
-        if (res.ok) {
+        const res = await fetch("/api/feed").catch((err) => {
+          console.warn("Failed to fetch feed:", err);
+          return null;
+        });
+        if (res && res.ok) {
           const data = await res.json();
           const mapped: Post[] = (data.posts || []).map((p: any) => ({
             id: p.id,
@@ -67,7 +70,9 @@ export default function Index() {
           }));
           if (mapped.length) setFeed(mapped);
         }
-      } catch {}
+      } catch (err) {
+        console.warn("Feed loading error:", err);
+      }
     };
     load();
     const handler = () => load();
