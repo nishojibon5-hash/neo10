@@ -2,9 +2,9 @@ name: Build and Release APK
 
 on:
   push:
-    branches: [ "main" ] # সরাসরি টেস্ট করার জন্য মেইন ব্রাঞ্চ যুক্ত করা হলো
+    branches: [ "main" ] # সরাসরি টেস্ট করার জন্য মেইন ব্রাঞ্চে পুশ করলে শুরু হবে
     tags:
-      - "v*"
+      - "v*" # অথবা যখন v1.0 এর মতো ট্যাগ পুশ করবেন
   workflow_dispatch:
 
 jobs:
@@ -21,42 +21,45 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "18"
-          cache: "npm"
+          # cache: "npm" সরানো হয়েছে কারণ package-lock.json নেই
 
       - name: Setup Java
-        uses: actions/setup-java@v4 # v4 আপডেট করা হয়েছে
+        uses: actions/setup-java@v4
         with:
           distribution: "temurin"
-          java-version: "17" # Java 17 ব্যবহার করা নিরাপদ
+          java-version: "17" # আধুনিক অ্যান্ড্রয়েড বিল্ডের জন্য প্রয়োজন
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
       - name: Install dependencies
-        run: npm install # npm ci এর বদলে install ট্রাই করুন যদি প্রথমবার হয়
+        run: npm install
 
       - name: Build web assets
         run: npm run build
 
-      - name: Build Android
+      - name: Capacitor Sync
         run: |
           npm install -g @capacitor/cli
           npx cap sync
+
+      - name: Build APK (Debug/Unsigned)
+        run: |
           cd android
-          chmod +x gradlew # পারমিশন ফিক্স করার জন্য
+          chmod +x gradlew
           ./gradlew assembleRelease
 
-      - name: Find and Upload APK
-        uses: actions/upload-artifact@v4 # রিলিজ হওয়ার আগে ফাইলটি চেক করার জন্য
+      - name: Upload APK as Artifact
+        uses: actions/upload-artifact@v4
         with:
           name: app-release
           path: android/app/build/outputs/apk/release/*.apk
 
-      - name: Create Release
+      - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
         with:
           files: android/app/build/outputs/apk/release/*.apk
-          body: "New APK release"
+          body: "Auto-generated APK build from GitHub Actions."
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
