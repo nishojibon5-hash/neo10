@@ -18,7 +18,10 @@
     "start": "node dist/server/node-build.mjs",
     "test": "vitest --run",
     "format.fix": "prettier --write .",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "cap:sync": "cap sync",
+    "cap:build": "npm run build:client && cap sync && cap open android",
+    "apk:build": "npm run build:client && cap sync && cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
