@@ -4,9 +4,11 @@ import { ReactionButton } from "./Reactions";
 import AdInline from "./AdInline";
 import { Link } from "react-router-dom";
 import Comments from "./Comments";
-import { useState } from "react";
+import { useState, memo, lazy, Suspense } from "react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { getToken, getUser } from "@/lib/auth";
+
+const Comments_Lazy = lazy(() => import("./Comments"));
 
 export interface Post {
   id: string;
@@ -31,19 +33,51 @@ function sanitizeHtml(html: string) {
     if (/^http:\/\//i.test(normalized)) return `/api/proxy?url=${encodeURIComponent(normalized)}`;
     return normalized;
   };
-  // Replace src/poster URLs and proxy insecure ones
   return html.replace(/(\s(?:src|poster)\s*=\s*")([^"]*)(")/gi, (_m, p1, url, p3) => `${p1}${fix(url)}${p3}`);
 }
 
-export default function PostCard({ post }: { post: Post }) {
+const LazyImage = memo(({ src, alt }: { src: string; alt: string }) => {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className="max-w-full h-auto"
+      loading="lazy"
+      onLoad={() => setLoaded(true)}
+      style={{ opacity: loaded ? 1 : 0.7, transition: "opacity 0.3s" }}
+    />
+  );
+});
+
+const LazyVideo = memo(({ src }: { src: string }) => {
+  return (
+    <video
+      src={src}
+      controls
+      className="w-full h-auto"
+      loading="lazy"
+      preload="metadata"
+    />
+  );
+});
+
+function PostCardContent({ post, deleted, setDeleted, onComments, onShare }: any) {
   const share = async () => {
-    const url = window.location.href.split('#')[0];
+    const url = window.location.href.split("#")[0];
     const link = `${url}#post-${post.id}`;
-    try { if ((navigator as any).share) { await (navigator as any).share({ title: 'Post', url: link }); } else { await navigator.clipboard.writeText(link); alert('Link copied'); } } catch {}
+    try {
+      if ((navigator as any).share) {
+        await (navigator as any).share({ title: "Post", url: link });
+      } else {
+        await navigator.clipboard.writeText(link);
+        alert("Link copied");
+      }
+    } catch {}
   };
-  const [openComments, setOpenComments] = useState(false);
-  const [deleted, setDeleted] = useState(false);
+
   if (deleted) return null;
+
   return (
     <article id={`post-${post.id}`} className="rounded-xl border bg-card overflow-visible">
       <header className="flex items-center justify-between p-3">
@@ -55,7 +89,12 @@ export default function PostCard({ post }: { post: Post }) {
             </Avatar>
           </Link>
           <div className="leading-tight">
-            <Link to={post.author.id ? `/u/${post.author.id}` : "/profile"} className="font-semibold hover:underline">{post.author.name}</Link>
+            <Link
+              to={post.author.id ? `/u/${post.author.id}` : "/profile"}
+              className="font-semibold hover:underline"
+            >
+              {post.author.name}
+            </Link>
             <p className="text-xs text-muted-foreground">{post.createdAt}</p>
           </div>
         </div>
@@ -68,17 +107,25 @@ export default function PostCard({ post }: { post: Post }) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {post.author.id && getUser()?.id === post.author.id ? (
-                <DropdownMenuItem className="text-red-600" onClick={async () => {
-                  if (!confirm("Delete this post?")) return;
-                  try {
-                    const res = await fetch(`/api/posts/${post.id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${getToken()}` } });
-                    if (res.ok) {
-                      setDeleted(true);
-                      window.dispatchEvent(new Event('feed:refresh'));
-                      window.dispatchEvent(new CustomEvent('post:deleted', { detail: { id: post.id } } as any));
-                    }
-                  } catch {}
-                }}>
+                <DropdownMenuItem
+                  className="text-red-600"
+                  onClick={async () => {
+                    if (!confirm("Delete this post?")) return;
+                    try {
+                      const res = await fetch(`/api/posts/${post.id}`, {
+                        method: "DELETE",
+                        headers: { Authorization: `Bearer ${getToken()}` },
+                      });
+                      if (res.ok) {
+                        setDeleted(true);
+                        window.dispatchEvent(new Event("feed:refresh"));
+                        window.dispatchEvent(
+                          new CustomEvent("post:deleted", { detail: { id: post.id } } as any)
+                        );
+                      }
+                    } catch {}
+                  }}
+                >
                   <Trash2 className="size-4 mr-2" /> Delete
                 </DropdownMenuItem>
               ) : null}
@@ -86,33 +133,71 @@ export default function PostCard({ post }: { post: Post }) {
           </DropdownMenu>
         </div>
       </header>
+
       {post.mode === "html" ? (
-        <div className="px-3 pb-3 text-sm prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }} />
+        <div
+          className="px-3 pb-3 text-sm prose prose-sm max-w-none"
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }}
+        />
       ) : (
         <div className="px-3 pb-3 text-sm whitespace-pre-wrap">{post.content}</div>
       )}
-      {post.image && (
-        <img src={post.image} alt="" className="max-w-full h-auto" />
-      )}
-      {post.video && (
-        <video src={post.video} controls className="w-full h-auto" />
-      )}
+
+      {post.image && <LazyImage src={post.image} alt="" />}
+      {post.video && <LazyVideo src={post.video} />}
       {post.monetized ? <AdInline /> : null}
+
       <div className="px-3 py-2 text-xs text-muted-foreground flex items-center gap-4">
         <span>{post.likes} reactions</span>
         <span>{post.comments} comments</span>
         <span>{post.shares} shares</span>
       </div>
+
       <div className="grid grid-cols-3 divide-x border-t text-sm">
         <ReactionButton postId={post.id} initialCount={post.likes} />
-        <button className="flex items-center justify-center gap-2 py-2.5 hover:bg-muted/60" onClick={() => setOpenComments((v: boolean) => !v)}>
+        <button
+          className="flex items-center justify-center gap-2 py-2.5 hover:bg-muted/60"
+          onClick={() => onComments(!onComments)}
+        >
           <MessageCircle className="size-5" /> Comment
         </button>
-        <button className="flex items-center justify-center gap-2 py-2.5 hover:bg-muted/60" onClick={share}>
+        <button
+          className="flex items-center justify-center gap-2 py-2.5 hover:bg-muted/60"
+          onClick={share}
+        >
           <Share2 className="size-5" /> Share
         </button>
       </div>
-      {openComments ? <Comments postId={post.id} /> : null}
     </article>
   );
 }
+
+const PostCardMemo = memo(PostCardContent, (prev, next) => {
+  return (
+    prev.post.id === next.post.id &&
+    prev.post.likes === next.post.likes &&
+    prev.post.comments === next.post.comments &&
+    prev.deleted === next.deleted
+  );
+});
+
+export default memo(function PostCard({ post }: { post: Post }) {
+  const [openComments, setOpenComments] = useState(false);
+  const [deleted, setDeleted] = useState(false);
+
+  return (
+    <>
+      <PostCardMemo
+        post={post}
+        deleted={deleted}
+        setDeleted={setDeleted}
+        onComments={openComments}
+      />
+      {openComments && (
+        <Suspense fallback={<div className="p-4">Loading comments...</div>}>
+          <Comments_Lazy postId={post.id} />
+        </Suspense>
+      )}
+    </>
+  );
+});
