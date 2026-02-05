@@ -75,7 +75,7 @@ function parseMediaInput(input: string): { imageUrl?: string; html?: string } {
   return {};
 }
 
-export default function Composer() {
+function ComposerContent() {
   const [expanded, setExpanded] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
   const [mode, setMode] = useState<"text" | "html">("text");
@@ -85,6 +85,7 @@ export default function Composer() {
   const [embedHtml, setEmbedHtml] = useState("");
   const [type, setType] = useState<"post" | "video" | "reel">("post");
   const [monetized, setMonetized] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const canProceed = useMemo(() => {
     return (content && content.trim().length > 0) || !!mediaInput.trim() || !!image;
