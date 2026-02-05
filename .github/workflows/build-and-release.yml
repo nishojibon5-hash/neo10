@@ -1,10 +1,10 @@
-name: Build and Release APK
+name: Build and Release APK (Bypass Mode)
 
 on:
   push:
-    branches: [ "main" ] # সরাসরি টেস্ট করার জন্য মেইন ব্রাঞ্চে পুশ করলে শুরু হবে
+    branches: [ "main" ]
     tags:
-      - "v*" # অথবা যখন v1.0 এর মতো ট্যাগ পুশ করবেন
+      - "v*"
   workflow_dispatch:
 
 jobs:
@@ -21,13 +21,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "18"
-          # cache: "npm" সরানো হয়েছে কারণ package-lock.json নেই
 
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
-          java-version: "17" # আধুনিক অ্যান্ড্রয়েড বিল্ডের জন্য প্রয়োজন
+          java-version: "17"
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -38,28 +37,31 @@ jobs:
       - name: Build web assets
         run: npm run build
 
-      - name: Capacitor Sync
+      - name: Bypass and Force Create Android Folder
         run: |
           npm install -g @capacitor/cli
+          # যদি অ্যান্ড্রয়েড ফোল্ডার থাকে সেটা মুছে ফেলে নতুন করে তৈরি করবে (বাইপাস)
+          rm -rf android 
+          npx cap add android
           npx cap sync
 
-      - name: Build APK (Debug/Unsigned)
+      - name: Build APK (Release)
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleRelease
 
-      - name: Upload APK as Artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-release
           path: android/app/build/outputs/apk/release/*.apk
 
-      - name: Create GitHub Release
+      - name: Create Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
         with:
           files: android/app/build/outputs/apk/release/*.apk
-          body: "Auto-generated APK build from GitHub Actions."
+          body: "Bypass mode build successful!"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
