@@ -22,6 +22,7 @@ import Friends from "./pages/Friends";
 import Notifications from "./pages/Notifications";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Splash from "./pages/Splash";
 import RequireAuth from "./lib/RequireAuth";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          <Route path="/splash" element={<Splash />} />
           <Route path="/" element={<RequireAuth><Index /></RequireAuth>} />
           <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
           <Route path="/profile/edit" element={<RequireAuth><ProfileEdit /></RequireAuth>} />
