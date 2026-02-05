@@ -27,8 +27,8 @@ const defaultFeed: Post[] = [
   },
   {
     id: "3",
-    author: { name: "NEO10", avatar: "https://i.pravatar.cc/100?img=12" },
-    content: "Welcome to NEO10 — a fast, modern, Facebook Lite inspired experience.",
+    author: { name: "JOY BANGLA", avatar: "https://i.pravatar.cc/100?img=12" },
+    content: "Welcome to JOY BANGLA — a fast, modern, Facebook Lite inspired experience.",
     createdAt: "5h",
     likes: 56,
     comments: 6,
