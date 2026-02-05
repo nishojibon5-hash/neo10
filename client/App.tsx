@@ -34,8 +34,8 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Splash />} />
-          <Route path="/home" element={<RequireAuth><Index /></RequireAuth>} />
+          <Route path="/" element={<RequireAuth><Index /></RequireAuth>} />
+          <Route path="/splash" element={<Splash />} />
           <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
           <Route path="/profile/edit" element={<RequireAuth><ProfileEdit /></RequireAuth>} />
           <Route path="/u/:id" element={<UserProfile />} />
