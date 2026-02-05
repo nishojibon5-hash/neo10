@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Joy Bangla</string>
+    <string name="title_activity_main">Joy Bangla</string>
+    <string name="package_name">com.joybangla.app</string>
+    <string name="custom_url_scheme">com.joybangla.app</string>
+</resources>
