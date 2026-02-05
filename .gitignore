@@ -25,3 +25,14 @@ dist-ssr
 
 .config/
 !.env
+
+# Android and Capacitor
+android/
+.gradle/
+*.apk
+*.jks
+local.properties
+/captured_files/
+
+# Capacitor
+capacitor.lock.json
