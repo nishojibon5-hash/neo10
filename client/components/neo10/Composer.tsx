@@ -91,7 +91,7 @@ function ComposerContent() {
     return (content && content.trim().length > 0) || !!mediaInput.trim() || !!image;
   }, [content, mediaInput, image]);
 
-  const reset = () => {
+  const reset = useCallback(() => {
     setExpanded(false);
     setStep(1);
     setMode("text");
@@ -101,9 +101,10 @@ function ComposerContent() {
     setEmbedHtml("");
     setType("post");
     setMonetized(false);
-  };
+    setSubmitting(false);
+  }, []);
 
-  const handleNext = async () => {
+  const handleNext = useCallback(async () => {
     let parsed = parseMediaInput(mediaInput);
     // If it's an absolute HTTP(S) link, try resolving content-type
     if (!parsed.imageUrl && !parsed.html && /^https?:\/\//i.test(mediaInput.trim())) {
@@ -124,9 +125,10 @@ function ComposerContent() {
     if (parsed.html) setEmbedHtml(parsed.html);
     if (parsed.html && mode !== "html") setMode("html");
     setStep(2);
-  };
+  }, [mediaInput, mode]);
 
-  const submit = async () => {
+  const submit = useCallback(async () => {
+    setSubmitting(true);
     try {
       const token = localStorage.getItem("token") || "";
 
@@ -167,8 +169,10 @@ function ComposerContent() {
       }
     } catch {
       alert("Network error");
+    } finally {
+      setSubmitting(false);
     }
-  };
+  }, [content, mode, image, embedHtml, mediaInput, type, monetized, reset]);
 
   if (!expanded) {
     return (
