@@ -44,7 +44,8 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
+        <Suspense fallback={<LoadingFallback />}>
+          <Routes>
           <Route
             path="/"
             element={
@@ -165,7 +166,8 @@ const App = () => (
           <Route path="/marketplace/item/:id" element={<MarketplaceItem />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
-        </Routes>
+          </Routes>
+        </Suspense>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
