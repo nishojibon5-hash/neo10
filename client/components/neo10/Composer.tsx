@@ -303,10 +303,12 @@ function ComposerContent() {
           </div>
 
           <div className="flex items-center justify-between">
-            <Button variant="ghost" size="sm" onClick={() => setStep(1)}>Back</Button>
+            <Button variant="ghost" size="sm" onClick={() => setStep(1)} disabled={submitting}>Back</Button>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={reset}>Discard</Button>
-              <Button size="sm" onClick={submit}>Share</Button>
+              <Button variant="outline" size="sm" onClick={reset} disabled={submitting}>Discard</Button>
+              <Button size="sm" onClick={submit} disabled={submitting}>
+                {submitting ? "Sharing..." : "Share"}
+              </Button>
             </div>
           </div>
         </div>
@@ -314,3 +316,5 @@ function ComposerContent() {
     </div>
   );
 }
+
+export default memo(ComposerContent);
