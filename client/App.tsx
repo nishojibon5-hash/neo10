@@ -5,24 +5,36 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import Profile from "./pages/Profile";
-import ProfileEdit from "./pages/ProfileEdit";
-import UserProfile from "./pages/UserProfile";
-import Placeholder from "./pages/Placeholder";
-import Marketplace from "./pages/Marketplace";
-import MarketplaceCreate from "./pages/MarketplaceCreate";
-import MarketplaceItem from "./pages/MarketplaceItem";
-import AdsCreate from "./pages/AdsCreate";
-import AdsDashboard from "./pages/AdsDashboard";
-import Messages from "./pages/Messages";
-import Friends from "./pages/Friends";
-import Notifications from "./pages/Notifications";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Splash from "./pages/Splash";
+import { lazy, Suspense, memo } from "react";
 import RequireAuth from "./lib/RequireAuth";
+
+const LoadingFallback = memo(() => (
+  <div className="flex items-center justify-center min-h-screen bg-background">
+    <div className="text-center">
+      <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent mb-4" />
+      <p className="text-muted-foreground">Loading...</p>
+    </div>
+  </div>
+));
+
+// Lazy load pages
+const Index = lazy(() => import("./pages/Index"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Profile = lazy(() => import("./pages/Profile"));
+const ProfileEdit = lazy(() => import("./pages/ProfileEdit"));
+const UserProfile = lazy(() => import("./pages/UserProfile"));
+const Placeholder = lazy(() => import("./pages/Placeholder"));
+const Marketplace = lazy(() => import("./pages/Marketplace"));
+const MarketplaceCreate = lazy(() => import("./pages/MarketplaceCreate"));
+const MarketplaceItem = lazy(() => import("./pages/MarketplaceItem"));
+const AdsCreate = lazy(() => import("./pages/AdsCreate"));
+const AdsDashboard = lazy(() => import("./pages/AdsDashboard"));
+const Messages = lazy(() => import("./pages/Messages"));
+const Friends = lazy(() => import("./pages/Friends"));
+const Notifications = lazy(() => import("./pages/Notifications"));
+const Login = lazy(() => import("./pages/Login"));
+const Register = lazy(() => import("./pages/Register"));
+const Splash = lazy(() => import("./pages/Splash"));
 
 const queryClient = new QueryClient();
 
