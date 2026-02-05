@@ -53,7 +53,7 @@ export default function Header() {
             </button>
           ) : (
             <Link to="/" className="shrink-0">
-              <span className="text-2xl font-black tracking-tight text-primary">NEO10</span>
+              <span className="text-2xl font-black tracking-tight text-primary">JOY BANGLA</span>
             </Link>
           )}
 
