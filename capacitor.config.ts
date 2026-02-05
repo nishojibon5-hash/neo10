@@ -1,0 +1,28 @@
+import { CapacitorConfig } from '@capacitor/cli';
+
+const config: CapacitorConfig = {
+  appId: 'com.joybangla.app',
+  appName: 'Joy Bangla',
+  webDir: 'dist/spa',
+  server: {
+    androidScheme: 'https'
+  },
+  android: {
+    allowMixedContent: true,
+    captureInput: true,
+    webContentsDebuggingEnabled: false
+  },
+  plugins: {
+    SplashScreen: {
+      launchShowDuration: 3000,
+      showSpinner: true,
+      spinnerColor: '#006bb6'
+    },
+    StatusBar: {
+      style: 'dark',
+      backgroundColor: '#006bb6'
+    }
+  }
+};
+
+export default config;
