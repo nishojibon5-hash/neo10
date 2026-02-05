@@ -1,8 +1,20 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Search, Plus, MoreHorizontal, ChevronLeft, ShoppingBag } from "lucide-react";
+import {
+  Search,
+  Plus,
+  MoreHorizontal,
+  ChevronLeft,
+  ShoppingBag,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import MobileNav from "./MobileNav";
 import { getUser, clearToken } from "@/lib/auth";
 import { useEffect, useState } from "react";
@@ -14,17 +26,70 @@ function MenuContent({ onNavigate }: { onNavigate: (to: string) => void }) {
         <SheetTitle>Menu</SheetTitle>
       </SheetHeader>
       <nav className="flex-1 py-2">
-        <button onClick={() => onNavigate('/profile')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Profile</button>
-        <button onClick={() => onNavigate('/friends')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Friends</button>
-        <button onClick={() => onNavigate('/messages')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Messenger</button>
-        <button onClick={() => onNavigate('/notifications')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Notifications</button>
-        <button onClick={() => onNavigate('/videos')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Videos</button>
-        <button onClick={() => onNavigate('/marketplace')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Marketplace</button>
-        <button onClick={() => onNavigate('/ads/create')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Create Ads</button>
-        <button onClick={() => onNavigate('/ads/dashboard')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Ads Dashboard</button>
-        <button onClick={() => onNavigate('/settings')} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md">Settings</button>
+        <button
+          onClick={() => onNavigate("/profile")}
+          className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md"
+        >
+          Profile
+        </button>
+        <button
+          onClick={() => onNavigate("/friends")}
+          className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md"
+        >
+          Friends
+        </button>
+        <button
+          onClick={() => onNavigate("/messages")}
+          className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md"
+        >
+          Messenger
+        </button>
+        <button
+          onClick={() => onNavigate("/notifications")}
+          className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md"
+        >
+          Notifications
+        </button>
+        <button
+          onClick={() => onNavigate("/videos")}
+          className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md"
+        >
+          Videos
+        </button>
+        <button
+          onClick={() => onNavigate("/marketplace")}
+          className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md"
+        >
+          Marketplace
+        </button>
+        <button
+          onClick={() => onNavigate("/ads/create")}
+          className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md"
+        >
+          Create Ads
+        </button>
+        <button
+          onClick={() => onNavigate("/ads/dashboard")}
+          className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md"
+        >
+          Ads Dashboard
+        </button>
+        <button
+          onClick={() => onNavigate("/settings")}
+          className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md"
+        >
+          Settings
+        </button>
         <div className="border-t my-2" />
-        <button onClick={() => { clearToken(); onNavigate('/login'); }} className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md text-red-600">Log out</button>
+        <button
+          onClick={() => {
+            clearToken();
+            onNavigate("/login");
+          }}
+          className="w-full text-left px-3 py-2 hover:bg-muted/60 rounded-md text-red-600"
+        >
+          Log out
+        </button>
       </nav>
     </div>
   );
@@ -40,7 +105,10 @@ export default function Header() {
     const update = () => setUserState(getUser());
     window.addEventListener("auth:change", update);
     window.addEventListener("storage", update);
-    return () => { window.removeEventListener("auth:change", update); window.removeEventListener("storage", update); };
+    return () => {
+      window.removeEventListener("auth:change", update);
+      window.removeEventListener("storage", update);
+    };
   }, []);
 
   return (
@@ -48,12 +116,17 @@ export default function Header() {
       <div className="mx-auto max-w-6xl px-2 sm:px-4">
         <div className="flex items-center gap-3 h-14">
           {canGoBack ? (
-            <button onClick={() => navigate(-1)} className="grid place-items-center h-9 w-9 rounded-full hover:bg-muted/60">
+            <button
+              onClick={() => navigate(-1)}
+              className="grid place-items-center h-9 w-9 rounded-full hover:bg-muted/60"
+            >
               <ChevronLeft className="size-5" />
             </button>
           ) : (
             <Link to="/" className="shrink-0">
-              <span className="text-2xl font-black tracking-tight text-primary">JOY BANGLA</span>
+              <span className="text-2xl font-black tracking-tight text-primary">
+                JOY BANGLA
+              </span>
             </Link>
           )}
 
@@ -63,22 +136,38 @@ export default function Header() {
               <Input
                 className="pl-8 h-9 rounded-full bg-muted/60 focus-visible:ring-1"
                 placeholder="Search"
-                onKeyDown={(e) => { if (e.key === "Enter") navigate("/search"); }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") navigate("/search");
+                }}
               />
             </div>
           </div>
 
           <div className="ml-auto hidden md:flex items-center gap-2">
-            <button onClick={() => navigate("/marketplace")} className="grid place-items-center h-9 w-9 rounded-full bg-muted/60">
+            <button
+              onClick={() => navigate("/marketplace")}
+              className="grid place-items-center h-9 w-9 rounded-full bg-muted/60"
+            >
               <ShoppingBag className="size-5" />
             </button>
-            <button onClick={() => navigate("/create")} className="grid place-items-center h-9 w-9 rounded-full bg-muted/60">
+            <button
+              onClick={() => navigate("/create")}
+              className="grid place-items-center h-9 w-9 rounded-full bg-muted/60"
+            >
               <Plus className="size-5" />
             </button>
             <Link to="/profile" className="rounded-full">
               <Avatar className="h-9 w-9">
-                <AvatarImage src={(user?.avatar_url as string) || "https://i.pravatar.cc/100?img=68"} alt={user?.name || "You"} />
-                <AvatarFallback>{(user?.name || "U").slice(0,2).toUpperCase()}</AvatarFallback>
+                <AvatarImage
+                  src={
+                    (user?.avatar_url as string) ||
+                    "https://i.pravatar.cc/100?img=68"
+                  }
+                  alt={user?.name || "You"}
+                />
+                <AvatarFallback>
+                  {(user?.name || "U").slice(0, 2).toUpperCase()}
+                </AvatarFallback>
               </Avatar>
             </Link>
             <Sheet>
@@ -94,19 +183,36 @@ export default function Header() {
           </div>
 
           <div className="ml-auto flex items-center gap-2 md:hidden">
-            <button onClick={() => navigate("/marketplace")} className="grid place-items-center h-9 w-9 rounded-full bg-muted/60">
+            <button
+              onClick={() => navigate("/marketplace")}
+              className="grid place-items-center h-9 w-9 rounded-full bg-muted/60"
+            >
               <ShoppingBag className="size-5" />
             </button>
-            <button onClick={() => navigate("/create")} className="grid place-items-center h-9 w-9 rounded-full bg-muted/60">
+            <button
+              onClick={() => navigate("/create")}
+              className="grid place-items-center h-9 w-9 rounded-full bg-muted/60"
+            >
               <Plus className="size-5" />
             </button>
-            <button onClick={() => navigate("/search")} className="grid place-items-center h-9 w-9 rounded-full bg-muted/60">
+            <button
+              onClick={() => navigate("/search")}
+              className="grid place-items-center h-9 w-9 rounded-full bg-muted/60"
+            >
               <Search className="size-5" />
             </button>
             <Link to="/profile" className="rounded-full">
               <Avatar className="h-9 w-9">
-                <AvatarImage src={(user?.avatar_url as string) || "https://i.pravatar.cc/100?img=68"} alt={user?.name || "You"} />
-                <AvatarFallback>{(user?.name || "U").slice(0,2).toUpperCase()}</AvatarFallback>
+                <AvatarImage
+                  src={
+                    (user?.avatar_url as string) ||
+                    "https://i.pravatar.cc/100?img=68"
+                  }
+                  alt={user?.name || "You"}
+                />
+                <AvatarFallback>
+                  {(user?.name || "U").slice(0, 2).toUpperCase()}
+                </AvatarFallback>
               </Avatar>
             </Link>
             <Sheet>

@@ -27,7 +27,8 @@ export default function Splash() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(20,20,40,0.95) 100%)",
+        background:
+          "linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(20,20,40,0.95) 100%)",
         position: "relative",
         overflow: "hidden",
       }}

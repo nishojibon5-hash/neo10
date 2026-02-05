@@ -9,7 +9,8 @@ const defaultFeed: Post[] = [
     id: "1",
     author: { name: "Ayesha Khan", avatar: "https://i.pravatar.cc/100?img=15" },
     content: "আজকে ঢাকার আকাশটা দারুণ সুন্দর! ☁️",
-    image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1400&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1400&auto=format&fit=crop",
     createdAt: "1h",
     likes: 120,
     comments: 24,
@@ -19,7 +20,8 @@ const defaultFeed: Post[] = [
     id: "2",
     author: { name: "Rahim Uddin", avatar: "https://i.pravatar.cc/100?img=24" },
     content: "Weekend trip with friends!",
-    image: "https://images.unsplash.com/photo-1520975922284-ec47b4b66804?q=80&w=1400&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1520975922284-ec47b4b66804?q=80&w=1400&auto=format&fit=crop",
     createdAt: "3h",
     likes: 89,
     comments: 17,
@@ -28,7 +30,8 @@ const defaultFeed: Post[] = [
   {
     id: "3",
     author: { name: "JOY BANGLA", avatar: "https://i.pravatar.cc/100?img=12" },
-    content: "Welcome to JOY BANGLA — a fast, modern, Facebook Lite inspired experience.",
+    content:
+      "Welcome to JOY BANGLA — a fast, modern, Facebook Lite inspired experience.",
     createdAt: "5h",
     likes: 56,
     comments: 6,
@@ -47,9 +50,13 @@ export default function Index() {
           const data = await res.json();
           const mapped: Post[] = (data.posts || []).map((p: any) => ({
             id: p.id,
-            author: { id: p.user_id, name: p.user_name, avatar: p.user_avatar || "https://i.pravatar.cc/100?img=12" },
+            author: {
+              id: p.user_id,
+              name: p.user_name,
+              avatar: p.user_avatar || "https://i.pravatar.cc/100?img=12",
+            },
             content: p.content || "",
-            mode: p.content_mode === 'html' ? 'html' : 'text',
+            mode: p.content_mode === "html" ? "html" : "text",
             image: p.image_url || undefined,
             video: p.video_url || undefined,
             createdAt: new Date(p.created_at).toLocaleString(),

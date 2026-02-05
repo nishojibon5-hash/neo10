@@ -34,25 +34,123 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<RequireAuth><Index /></RequireAuth>} />
+          <Route
+            path="/"
+            element={
+              <RequireAuth>
+                <Index />
+              </RequireAuth>
+            }
+          />
           <Route path="/splash" element={<Splash />} />
-          <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
-          <Route path="/profile/edit" element={<RequireAuth><ProfileEdit /></RequireAuth>} />
+          <Route
+            path="/profile"
+            element={
+              <RequireAuth>
+                <Profile />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/profile/edit"
+            element={
+              <RequireAuth>
+                <ProfileEdit />
+              </RequireAuth>
+            }
+          />
           <Route path="/u/:id" element={<UserProfile />} />
-          <Route path="/friends" element={<RequireAuth><Friends /></RequireAuth>} />
-          <Route path="/videos" element={<RequireAuth><Placeholder title="Videos" /></RequireAuth>} />
+          <Route
+            path="/friends"
+            element={
+              <RequireAuth>
+                <Friends />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/videos"
+            element={
+              <RequireAuth>
+                <Placeholder title="Videos" />
+              </RequireAuth>
+            }
+          />
           <Route path="/marketplace" element={<Marketplace />} />
-          <Route path="/notifications" element={<RequireAuth><Notifications /></RequireAuth>} />
-          <Route path="/messages" element={<RequireAuth><Messages /></RequireAuth>} />
-          <Route path="/create" element={<RequireAuth><Placeholder title="Create" /></RequireAuth>} />
-          <Route path="/marketplace/create" element={<RequireAuth><MarketplaceCreate /></RequireAuth>} />
+          <Route
+            path="/notifications"
+            element={
+              <RequireAuth>
+                <Notifications />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/messages"
+            element={
+              <RequireAuth>
+                <Messages />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/create"
+            element={
+              <RequireAuth>
+                <Placeholder title="Create" />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/marketplace/create"
+            element={
+              <RequireAuth>
+                <MarketplaceCreate />
+              </RequireAuth>
+            }
+          />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/search" element={<RequireAuth><Placeholder title="Search" /></RequireAuth>} />
-          <Route path="/ads/create" element={<RequireAuth><AdsCreate /></RequireAuth>} />
-          <Route path="/admin" element={<RequireAuth><Placeholder title="Admin Panel" /></RequireAuth>} />
-          <Route path="/settings" element={<RequireAuth><Placeholder title="Settings" /></RequireAuth>} />
-          <Route path="/ads/dashboard" element={<RequireAuth><AdsDashboard /></RequireAuth>} />
+          <Route
+            path="/search"
+            element={
+              <RequireAuth>
+                <Placeholder title="Search" />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/ads/create"
+            element={
+              <RequireAuth>
+                <AdsCreate />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <RequireAuth>
+                <Placeholder title="Admin Panel" />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <RequireAuth>
+                <Placeholder title="Settings" />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/ads/dashboard"
+            element={
+              <RequireAuth>
+                <AdsDashboard />
+              </RequireAuth>
+            }
+          />
           <Route path="/marketplace/item/:id" element={<MarketplaceItem />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
